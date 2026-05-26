@@ -2131,8 +2131,8 @@
     function render() {
       const v = values();
       ui.winRateText.textContent = `${v.winRate}%`;
-      input.targetDays.value = v.targetDays;
-      input.minDays.value = v.minDays;
+      if (document.activeElement !== input.targetDays) input.targetDays.value = v.targetDays;
+      if (document.activeElement !== input.minDays) input.minDays.value = v.minDays;
       updateWinRateSlider(v.winRate);
       const selected = run(v, v.winRate, v.runs, 30);
       const rows = sweep(v);
@@ -2825,7 +2825,7 @@
       });
       input[id].addEventListener("change", () => {
         if (input.accountPreset) input.accountPreset.value = "custom";
-        schedule();
+        render();
       });
     });
 
