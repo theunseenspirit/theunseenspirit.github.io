@@ -1452,6 +1452,16 @@
             <h2>Account</h2>
           </div>
           <div class="grid">
+            <div class="wide">
+              <label for="accountPreset">Account preset</label>
+              <select id="accountPreset">
+                <option value="template-25k">$25k account</option>
+                <option value="template-50k">$50k account</option>
+                <option value="template-100k">$100k account</option>
+                <option value="template-150k">$150k account</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
             <div>
               <label for="profitTarget" id="targetLabel">Target</label>
               <div class="input-with-unit unit-short">
@@ -1785,6 +1795,7 @@
 
     const input = {};
     fields.forEach((id) => input[id] = document.getElementById(id));
+    input.accountPreset = document.getElementById("accountPreset");
 
     const ui = {
       winRateControl: document.getElementById("winRateControl"),
@@ -1849,8 +1860,15 @@
       if (migrated.targetDays === undefined && migrated.maxDays !== undefined) migrated.targetDays = migrated.maxDays;
       const merged = { ...defaults(), ...migrated };
       fields.forEach((id) => input[id].value = merged[id]);
+      if (input.accountPreset) input.accountPreset.value = presetIdFor(merged);
       ui.winRateText.textContent = `${merged.winRate}%`;
       updateWinRateSlider(merged.winRate);
+    }
+
+    function presetIdFor(values) {
+      const keys = fields.filter((id) => id !== "winRate");
+      const match = BUILT_INS.find((preset) => keys.every((key) => String(preset.values[key]) === String(values[key])));
+      return match ? match.id : "custom";
     }
 
     function updateWinRateSlider(value) {
@@ -2802,9 +2820,20 @@
           ui.winRateText.textContent = `${input.winRate.value}%`;
           updateWinRateSlider(input.winRate.value);
         }
+        if (input.accountPreset) input.accountPreset.value = "custom";
         schedule();
       });
-      input[id].addEventListener("change", schedule);
+      input[id].addEventListener("change", () => {
+        if (input.accountPreset) input.accountPreset.value = "custom";
+        schedule();
+      });
+    });
+
+    input.accountPreset.addEventListener("change", () => {
+      const preset = BUILT_INS.find((item) => item.id === input.accountPreset.value);
+      if (!preset) return;
+      setValues(preset.values);
+      render();
     });
 
     document.querySelector(".tabs").addEventListener("click", (event) => {
