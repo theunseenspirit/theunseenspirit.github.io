@@ -253,7 +253,19 @@
     }
 
     .input-with-unit input {
-      padding-right: 32px;
+      padding-right: var(--unit-padding, 58px);
+    }
+
+    .input-with-unit.unit-short input {
+      padding-right: 38px;
+    }
+
+    .input-with-unit.unit-medium input {
+      padding-right: 54px;
+    }
+
+    .input-with-unit.unit-wide input {
+      padding-right: 70px;
     }
 
     .field-unit {
@@ -1441,20 +1453,25 @@
           </div>
           <div class="grid">
             <div>
-              <label for="startingBalance">Balance</label>
-              <input id="startingBalance" type="number" min="0" step="1000">
-            </div>
-            <div>
               <label for="profitTarget" id="targetLabel">Target</label>
-              <input id="profitTarget" type="number" min="0" step="100">
+              <div class="input-with-unit unit-short">
+                <input id="profitTarget" type="number" min="0" step="100">
+                <span class="field-unit">$</span>
+              </div>
             </div>
             <div>
               <label for="targetDays">Target days</label>
-              <input id="targetDays" type="number" min="1" step="1">
+              <div class="input-with-unit unit-medium">
+                <input id="targetDays" type="number" min="1" step="1">
+                <span class="field-unit">days</span>
+              </div>
             </div>
             <div>
               <label for="maxLoss">Max loss</label>
-              <input id="maxLoss" type="number" min="1" step="100">
+              <div class="input-with-unit unit-short">
+                <input id="maxLoss" type="number" min="1" step="100">
+                <span class="field-unit">$</span>
+              </div>
             </div>
             <div>
               <label for="drawdownType">Drawdown</label>
@@ -1482,23 +1499,35 @@
             </div>
             <div>
               <label for="riskPerTrade">Risk per trade</label>
-              <input id="riskPerTrade" type="number" min="1" step="10">
+              <div class="input-with-unit unit-short">
+                <input id="riskPerTrade" type="number" min="1" step="10">
+                <span class="field-unit">$</span>
+              </div>
             </div>
             <div>
               <label for="rewardRisk">Reward / risk</label>
-              <input id="rewardRisk" type="number" min="0.1" step="0.1">
+              <div class="input-with-unit unit-short">
+                <input id="rewardRisk" type="number" min="0.1" step="0.1">
+                <span class="field-unit">R</span>
+              </div>
             </div>
             <div>
               <label for="tradesPerDay">Trades per day</label>
-              <input id="tradesPerDay" type="number" min="1" step="1">
+              <div class="input-with-unit unit-medium">
+                <input id="tradesPerDay" type="number" min="1" step="1">
+                <span class="field-unit">/day</span>
+              </div>
             </div>
             <div>
               <label for="slippageTicks">Slippage ticks</label>
-              <input id="slippageTicks" type="number" min="0" step="1" placeholder="Ticks per trade">
+              <div class="input-with-unit unit-medium">
+                <input id="slippageTicks" type="number" min="0" step="1" placeholder="Ticks per trade">
+                <span class="field-unit">ticks</span>
+              </div>
             </div>
             <div>
               <label for="commissionFees">Commission / fees</label>
-              <div class="input-with-unit">
+              <div class="input-with-unit unit-short">
                 <input id="commissionFees" type="number" min="0" step="0.01" placeholder="Dollars per trade">
                 <span class="field-unit">$</span>
               </div>
@@ -1513,23 +1542,38 @@
               <div class="grid">
                 <div>
                   <label for="minDays">Min qualifying days</label>
-                  <input id="minDays" type="number" min="1" step="1">
+                  <div class="input-with-unit unit-medium">
+                    <input id="minDays" type="number" min="1" step="1">
+                    <span class="field-unit">days</span>
+                  </div>
                 </div>
                 <div>
                   <label for="maxTrades">Max trades</label>
-                  <input id="maxTrades" type="number" min="0" step="1">
+                  <div class="input-with-unit unit-wide">
+                    <input id="maxTrades" type="number" min="0" step="1">
+                    <span class="field-unit">trades</span>
+                  </div>
                 </div>
                 <div>
                   <label for="runs">Runs</label>
-                  <input id="runs" type="number" min="100" max="50000" step="100">
+                  <div class="input-with-unit unit-medium">
+                    <input id="runs" type="number" min="100" max="50000" step="100">
+                    <span class="field-unit">runs</span>
+                  </div>
                 </div>
                 <div>
                   <label for="sweepMin">Sweep min</label>
-                  <input id="sweepMin" type="number" min="1" max="99" step="1">
+                  <div class="input-with-unit unit-short">
+                    <input id="sweepMin" type="number" min="1" max="99" step="1">
+                    <span class="field-unit">%</span>
+                  </div>
                 </div>
                 <div>
                   <label for="sweepMax">Sweep max</label>
-                  <input id="sweepMax" type="number" min="1" max="99" step="1">
+                  <div class="input-with-unit unit-short">
+                    <input id="sweepMax" type="number" min="1" max="99" step="1">
+                    <span class="field-unit">%</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1636,7 +1680,6 @@
         name: "$25k account",
         builtIn: true,
         values: {
-          startingBalance: 25000,
           profitTarget: 1250,
           maxLoss: 1000,
           drawdownType: "trailing-eod",
@@ -1659,7 +1702,6 @@
         name: "$50k account",
         builtIn: true,
         values: {
-          startingBalance: 50000,
           profitTarget: 3000,
           maxLoss: 2000,
           drawdownType: "trailing-eod",
@@ -1682,7 +1724,6 @@
         name: "$100k account",
         builtIn: true,
         values: {
-          startingBalance: 100000,
           profitTarget: 6000,
           maxLoss: 3000,
           drawdownType: "trailing-eod",
@@ -1705,7 +1746,6 @@
         name: "$150k account",
         builtIn: true,
         values: {
-          startingBalance: 150000,
           profitTarget: 9000,
           maxLoss: 4500,
           drawdownType: "trailing-eod",
@@ -1726,7 +1766,6 @@
     ];
 
     const fields = [
-      "startingBalance",
       "profitTarget",
       "maxLoss",
       "drawdownType",
