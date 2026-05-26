@@ -7,50 +7,56 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,600,0,0&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f8f8f6;
-      --panel: #ffffff;
-      --ink: #181918;
-      --muted: #70736f;
-      --line: #e7e4dc;
-      --soft: #f1f0eb;
-      --field: #f1f0eb;
-      --canvas: #ffffff;
-      --table-head: #fbfaf7;
-      --button-surface: #ffffff;
-      --axis: #4f5550;
-      --grid: #e7e4dc;
+      color-scheme: dark;
+      --bg: #030303;
+      --panel: #050505;
+      --ink: #f7f6ef;
+      --muted: #aaa79d;
+      --line: rgba(247, 246, 239, 0.15);
+      --soft: #0b0b0b;
+      --field: #050505;
+      --canvas: #030303;
+      --table-head: #0b0b0b;
+      --button-surface: #050505;
+      --axis: #f7f6ef;
+      --grid: rgba(247, 246, 239, 0.12);
+      --scroll-track: #050505;
+      --scroll-thumb: rgba(247, 246, 239, 0.32);
+      --scroll-thumb-hover: rgba(247, 246, 239, 0.56);
       --blue: #2563eb;
       --green: #15803d;
       --red: #dc2626;
       --amber: #b45309;
-      --shadow: 0 20px 60px rgba(24, 25, 24, 0.08);
-      --radius: 22px;
-      --small-radius: 12px;
+      --shadow: inset 0 0 0 1px var(--line);
+      --radius: 8px;
+      --small-radius: 8px;
       --font: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     :root[data-theme="dark"] {
       color-scheme: dark;
-      --bg: #0f100f;
-      --panel: #181a18;
-      --ink: #f3f3ef;
-      --muted: #a5aaa2;
-      --line: #30332e;
-      --soft: #22251f;
-      --field: #1f211d;
-      --canvas: #141613;
-      --table-head: #20231e;
-      --button-surface: #181a18;
-      --axis: #cfd4ca;
-      --grid: #2c302a;
+      --bg: #030303;
+      --panel: #050505;
+      --ink: #f7f6ef;
+      --muted: #aaa79d;
+      --line: rgba(247, 246, 239, 0.15);
+      --soft: #0b0b0b;
+      --field: #050505;
+      --canvas: #030303;
+      --table-head: #0b0b0b;
+      --button-surface: #050505;
+      --axis: #f7f6ef;
+      --grid: rgba(247, 246, 239, 0.12);
+      --scroll-track: #050505;
+      --scroll-thumb: rgba(247, 246, 239, 0.32);
+      --scroll-thumb-hover: rgba(247, 246, 239, 0.56);
       --blue: #6ea8ff;
       --green: #4ade80;
       --red: #ef4444;
       --amber: #fbbf24;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+      --shadow: inset 0 0 0 1px var(--line);
     }
 
     * {
@@ -59,7 +65,7 @@
 
     html {
       -webkit-font-smoothing: antialiased;
-      color-scheme: light;
+      color-scheme: dark;
     }
 
     body {
@@ -68,6 +74,35 @@
       color: var(--ink);
       font-family: var(--font);
       font-variant-numeric: tabular-nums;
+    }
+
+    html {
+      scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+      scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scroll-track);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      min-height: 44px;
+      border: 3px solid var(--scroll-track);
+      border-radius: 999px;
+      background: var(--scroll-thumb);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scroll-thumb-hover);
+    }
+
+    ::-webkit-scrollbar-corner {
+      background: var(--scroll-track);
     }
 
     button,
@@ -97,7 +132,7 @@
 
     .brand {
       display: grid;
-      gap: 5px;
+      gap: 12px;
     }
 
     .brand h1 {
@@ -129,11 +164,15 @@
     .controls {
       position: sticky;
       top: 18px;
+      width: 100%;
+      min-width: 0;
       padding: 16px;
       align-self: stretch;
     }
 
     .results {
+      width: 100%;
+      min-width: 0;
       padding: 18px;
     }
 
@@ -206,7 +245,7 @@
     input:focus,
     select:focus {
       background: var(--button-surface);
-      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.62), 0 0 0 4px rgba(37, 99, 235, 0.10);
+      box-shadow: inset 0 0 0 1px rgba(247, 246, 239, 0.9), 0 0 0 3px rgba(247, 246, 239, 0.12);
     }
 
     .input-with-unit {
@@ -292,7 +331,7 @@
     }
 
     .range-control:focus-within .range-thumb {
-      box-shadow: 0 7px 18px rgba(24, 25, 24, 0.26), 0 0 0 5px rgba(37, 99, 235, 0.14);
+      box-shadow: 0 7px 18px rgba(24, 25, 24, 0.26), 0 0 0 5px rgba(247, 246, 239, 0.12);
     }
 
     .preset-row {
@@ -318,8 +357,7 @@
 
     .button,
     .ghost,
-    .tab,
-    .theme-toggle {
+    .tab {
       min-height: 40px;
       border-radius: var(--small-radius);
       font-weight: 750;
@@ -329,13 +367,15 @@
     .button {
       padding: 0 16px;
       background: var(--ink);
-      color: #fff;
+      color: var(--bg);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.92),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.14);
     }
 
     .button:hover,
     .ghost:hover,
-    .tab:hover,
-    .theme-toggle:hover {
+    .tab:hover {
       transform: translateY(-1px);
     }
 
@@ -343,43 +383,9 @@
       padding: 0 12px;
       background: var(--button-surface);
       color: var(--ink);
-      box-shadow: inset 0 0 0 1px var(--line);
-    }
-
-    .theme-toggle {
-      display: inline-grid;
-      place-items: center;
-      min-height: 0;
-      width: 42px;
-      height: 42px;
-      padding: 0 13px;
-      background: var(--button-surface);
-      color: var(--ink);
-      box-shadow: inset 0 0 0 1px var(--line);
-      white-space: nowrap;
-    }
-
-    .material-symbols-rounded {
-      font-family: "Material Symbols Rounded";
-      font-weight: normal;
-      font-style: normal;
-      font-size: 21px;
-      line-height: 1;
-      letter-spacing: normal;
-      text-transform: none;
-      display: grid;
-      place-items: center;
-      width: 1em;
-      height: 1em;
-      white-space: nowrap;
-      direction: ltr;
-      -webkit-font-feature-settings: "liga";
-      -webkit-font-smoothing: antialiased;
-      font-feature-settings: "liga";
-    }
-
-    #themeIcon {
-      transform: translateX(-2px);
+      box-shadow:
+        inset 0 0 0 1px var(--line),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .danger {
@@ -388,7 +394,7 @@
     }
 
     details {
-      border-radius: 16px;
+      border-radius: 8px;
       background: var(--soft);
       padding: 0 12px;
     }
@@ -440,7 +446,7 @@
 
     .hero-metric,
     .mini-metric {
-      border-radius: 16px;
+      border-radius: 8px;
       background: var(--soft);
       padding: 13px;
       min-height: 94px;
@@ -521,7 +527,7 @@
       align-items: stretch;
       margin-bottom: 16px;
       padding: 16px;
-      border-radius: 18px;
+      border-radius: 8px;
       background: var(--panel);
       box-shadow: inset 0 0 0 1px var(--line);
     }
@@ -552,7 +558,7 @@
     }
 
     .chart-card {
-      border-radius: 18px;
+      border-radius: 8px;
       background: var(--soft);
       padding: 14px;
     }
@@ -606,7 +612,7 @@
       width: 100%;
       height: 360px;
       display: block;
-      border-radius: 14px;
+      border-radius: 8px;
       background: var(--canvas);
     }
 
@@ -615,15 +621,54 @@
       min-width: 0;
     }
 
+    .data-panel {
+      border-radius: 8px;
+      background: var(--soft);
+      padding: 12px;
+    }
+
+    .data-panel + .data-panel {
+      margin-top: 10px;
+    }
+
+    .data-title {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-size: 0.84rem;
+      font-weight: 760;
+      line-height: 1.2;
+    }
+
     .table-scroll {
       max-width: 100%;
       overflow-x: auto;
       overflow-y: hidden;
-      border-radius: 14px;
+      border-radius: 8px;
       background: var(--canvas);
       box-shadow: inset 0 0 0 1px var(--line);
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-x: contain;
+      scrollbar-color: var(--scroll-thumb) var(--canvas);
+      scrollbar-width: thin;
+    }
+
+    .table-scroll::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .table-scroll::-webkit-scrollbar-track {
+      border-radius: 999px;
+      background: var(--canvas);
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb {
+      border: 3px solid var(--canvas);
+      border-radius: 999px;
+      background: var(--scroll-thumb);
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--scroll-thumb-hover);
     }
 
     table {
@@ -759,8 +804,8 @@
 
     @media (max-width: 620px) {
       :root {
-        --radius: 18px;
-        --small-radius: 11px;
+        --radius: 8px;
+        --small-radius: 8px;
       }
 
       .app {
@@ -786,7 +831,7 @@
       }
 
       .brand {
-        gap: 4px;
+        gap: 8px;
       }
 
       .brand h1 {
@@ -800,11 +845,6 @@
         font-size: 0.82rem;
         line-height: 1.35;
         text-wrap: pretty;
-      }
-
-      .theme-toggle {
-        width: 40px;
-        height: 40px;
       }
 
       .results,
@@ -849,7 +889,7 @@
       .insight-card {
         padding: 14px;
         margin-bottom: 10px;
-        border-radius: 16px;
+        border-radius: 8px;
       }
 
       .insight-label {
@@ -877,7 +917,7 @@
       .mini-metric {
         min-height: 78px;
         padding: 10px;
-        border-radius: 14px;
+        border-radius: 8px;
       }
 
       .metric-label {
@@ -907,7 +947,7 @@
 
       .chart-card {
         padding: 10px;
-        border-radius: 16px;
+        border-radius: 8px;
         overflow: hidden;
       }
 
@@ -954,8 +994,8 @@
       canvas {
         width: 100%;
         max-width: 100%;
-        height: min(58vh, 340px);
-        min-height: 280px;
+        height: clamp(260px, 78vw, 320px);
+        min-height: 260px;
         border-radius: 13px;
       }
 
@@ -965,8 +1005,16 @@
         overflow: hidden;
       }
 
+      .data-panel {
+        padding: 10px;
+      }
+
+      .data-title {
+        font-size: 0.82rem;
+      }
+
       details {
-        border-radius: 14px;
+        border-radius: 8px;
         padding: 0 10px;
         min-width: 0;
         overflow: hidden;
@@ -991,6 +1039,120 @@
 
       .heatmap-table {
         min-width: 560px;
+      }
+    }
+
+    .top {
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(247, 246, 239, 0.9);
+    }
+
+    .brand h1 {
+      max-width: none;
+      font-size: clamp(2.55rem, 6vw, 5.6rem);
+      font-weight: 800;
+      line-height: 0.84;
+      white-space: nowrap;
+    }
+
+    .brand p {
+      max-width: 42rem;
+      font-size: clamp(1rem, 1.5vw, 1.22rem);
+      font-weight: 500;
+      line-height: 1.28;
+      text-wrap: pretty;
+    }
+
+    .card,
+    .insight-card,
+    .chart-card,
+    .hero-metric,
+    .mini-metric,
+    details,
+    canvas,
+    .table-scroll {
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .button,
+    .ghost,
+    .tab,
+    input,
+    select {
+      border: 1px solid var(--line);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.1),
+        inset 0 -1px 0 rgb(0 0 0 / 0.8);
+    }
+
+    .button,
+    .tab.active {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .ghost:hover,
+    .tab:hover,
+    .button:hover {
+      border-color: rgba(247, 246, 239, 0.9);
+      background: #0b0b0b;
+      color: var(--ink);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.16),
+        0 12px 26px -24px rgb(255 255 255 / 0.5);
+      transform: translateY(-2px);
+    }
+
+    .button:hover,
+    .tab.active:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    input:focus,
+    select:focus {
+      background: var(--button-surface);
+      box-shadow:
+        inset 0 0 0 1px rgba(247, 246, 239, 0.9),
+        0 0 0 3px rgba(247, 246, 239, 0.12);
+    }
+
+    .insight-main p {
+      font-size: clamp(1.28rem, 2.6vw, 2.15rem);
+      line-height: 1.08;
+    }
+
+    .metric-value {
+      font-size: clamp(1.45rem, 2.6vw, 2.45rem);
+      line-height: 0.9;
+    }
+
+    .chart-head h2,
+    .section-title h2 {
+      font-weight: 800;
+    }
+
+    .disclaimer {
+      border-top: 1px solid rgba(247, 246, 239, 0.9);
+      padding-top: 18px;
+    }
+
+    @media (max-width: 620px) {
+      .top {
+        padding-bottom: 14px;
+      }
+
+      .brand h1 {
+        max-width: none;
+        font-size: clamp(1.55rem, 7.2vw, 2.75rem);
+        white-space: nowrap;
+      }
+
+      .brand p {
+        max-width: 30ch;
       }
     }
 
@@ -1025,6 +1187,241 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
+
+    html,
+    body {
+      width: 100%;
+      overflow-x: clip;
+    }
+
+    button,
+    input,
+    select {
+      touch-action: manipulation;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1180px;
+      padding: 14px 10px 30px;
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 14px;
+    }
+
+    .brand {
+      min-width: 0;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      max-width: none;
+      font-size: clamp(1.55rem, 7.2vw, 2.75rem);
+      line-height: 0.84;
+      white-space: nowrap;
+    }
+
+    .brand p {
+      max-width: 31ch;
+      font-size: 0.92rem;
+      line-height: 1.28;
+    }
+
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .results {
+      order: 1;
+      padding: 12px;
+    }
+
+    .controls {
+      order: 2;
+      position: static;
+      padding: 12px;
+    }
+
+    .grid,
+    .preset-row {
+      grid-template-columns: 1fr;
+    }
+
+    .score {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .hero-metric {
+      grid-column: 1 / -1;
+    }
+
+    .chart-head {
+      display: grid;
+      gap: 10px;
+    }
+
+    .chart-actions {
+      justify-items: stretch;
+      min-width: 0;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+      justify-content: stretch;
+      width: 100%;
+    }
+
+    .chart-head {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    .chart-head > div:first-child,
+    .chart-actions {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .tab {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .button,
+    .ghost,
+    .tab,
+    input,
+    select,
+    summary {
+      min-height: 44px;
+    }
+
+    .table-scroll {
+      width: 100%;
+      max-width: calc(100vw - 44px);
+    }
+
+    table,
+    .heatmap-table {
+      width: max-content;
+      min-width: 560px;
+    }
+
+    @media (min-width: 380px) {
+      .tabs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 620px) {
+      .app {
+        width: min(1180px, calc(100vw - 32px));
+        padding: 28px 0 44px;
+      }
+
+      .brand h1 {
+        max-width: none;
+        font-size: clamp(2.55rem, 6vw, 5.6rem);
+        white-space: nowrap;
+      }
+
+      .brand p {
+        max-width: 42rem;
+        font-size: clamp(1rem, 1.5vw, 1.22rem);
+      }
+
+      .grid,
+      .preset-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .preset-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .table-scroll {
+        max-width: 100%;
+      }
+    }
+
+    @media (min-width: 980px) {
+      .top {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+      }
+
+      .brand h1 {
+        max-width: none;
+        white-space: nowrap;
+      }
+
+      .layout {
+        grid-template-columns: 360px minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      .results,
+      .controls {
+        order: initial;
+        padding: 18px;
+      }
+
+      .controls {
+        position: sticky;
+        top: 18px;
+        padding: 16px;
+      }
+
+      .score {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hero-metric {
+        grid-column: auto;
+      }
+
+      .chart-head {
+        display: grid;
+      }
+    }
+
+    .controls,
+    .results {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .tabs {
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    canvas,
+    .chart-card canvas,
+    details .table-scroll {
+      border: 0;
+      box-shadow: none;
+    }
+
+    @media (max-width: 340px) {
+      canvas {
+        height: 250px;
+        min-height: 250px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1034,25 +1431,13 @@
         <h1>Prop firm calculator</h1>
         <p>Calculate your target odds, drawdown risk, and expected edge before you size up.</p>
       </div>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" onclick="toggleTheme()">
-        <span class="material-symbols-rounded" id="themeIcon" aria-hidden="true">dark_mode</span>
-      </button>
     </header>
 
     <div class="layout">
       <aside class="card controls">
         <section class="section">
           <div class="section-title">
-            <h2>Preset</h2>
-            <span class="hint" id="savedCount">0 saved</span>
-          </div>
-          <select id="presetSelect" aria-label="Preset"></select>
-        </section>
-
-        <section class="section">
-          <div class="section-title">
             <h2>Account</h2>
-            <span class="hint">Rules and goal</span>
           </div>
           <div class="grid">
             <div>
@@ -1149,23 +1534,6 @@
               </div>
             </div>
           </details>
-          <details>
-            <summary>Save and manage presets</summary>
-            <div class="details-body">
-              <div class="preset-row">
-                <input id="presetName" type="text" placeholder="Name current setup">
-                <button class="ghost" id="savePreset" type="button">Save</button>
-              </div>
-              <div class="button-pair">
-                <button class="ghost" id="overwritePreset" type="button">Overwrite</button>
-                <button class="ghost" id="renamePreset" type="button">Rename</button>
-              </div>
-              <div class="button-pair">
-                <button class="ghost" id="duplicatePreset" type="button">Duplicate</button>
-                <button class="ghost danger" id="deletePreset" type="button">Delete</button>
-              </div>
-            </div>
-          </details>
         </section>
       </aside>
 
@@ -1223,35 +1591,31 @@
         </article>
 
         <div class="collapsed-data">
-          <details>
-            <summary>Win-rate heatmap</summary>
-            <div class="details-body">
-              <p class="heatmap-note">Target probability by win rate and risk per trade.</p>
-              <div class="table-scroll">
-                <table class="heatmap-table">
-                  <thead id="sensitivityHead"></thead>
-                  <tbody id="sensitivityBody"></tbody>
-                </table>
-              </div>
+          <article class="data-panel">
+            <h2 class="data-title">Win-rate heatmap</h2>
+            <p class="heatmap-note">Target probability by win rate and risk per trade.</p>
+            <div class="table-scroll">
+              <table class="heatmap-table">
+                <thead id="sensitivityHead"></thead>
+                <tbody id="sensitivityBody"></tbody>
+              </table>
             </div>
-          </details>
-          <details>
-            <summary>Monte Carlo summary</summary>
-            <div class="details-body">
-              <div class="table-scroll">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Metric</th>
-                      <th>Value</th>
-                      <th>Meaning</th>
-                    </tr>
-                  </thead>
-                  <tbody id="summaryBody"></tbody>
-                </table>
-              </div>
+          </article>
+          <article class="data-panel">
+            <h2 class="data-title">Monte Carlo summary</h2>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Meaning</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryBody"></tbody>
+              </table>
             </div>
-          </details>
+          </article>
         </div>
       </section>
     </div>
@@ -1265,7 +1629,6 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const STORAGE_KEY = "propFirmCalculatorPresets.v2";
     const SLIPPAGE_TICK_VALUE = 0.5;
     const BUILT_INS = [
       {
@@ -1385,16 +1748,6 @@
     fields.forEach((id) => input[id] = document.getElementById(id));
 
     const ui = {
-      presetSelect: document.getElementById("presetSelect"),
-      presetName: document.getElementById("presetName"),
-      savedCount: document.getElementById("savedCount"),
-      savePreset: document.getElementById("savePreset"),
-      overwritePreset: document.getElementById("overwritePreset"),
-      renamePreset: document.getElementById("renamePreset"),
-      duplicatePreset: document.getElementById("duplicatePreset"),
-      deletePreset: document.getElementById("deletePreset"),
-      themeToggle: document.getElementById("themeToggle"),
-      themeIcon: document.getElementById("themeIcon"),
       winRateControl: document.getElementById("winRateControl"),
       winRateText: document.getElementById("winRateText"),
       passRate: document.getElementById("passRate"),
@@ -1417,29 +1770,13 @@
     };
     ui.sensitivityHead = document.getElementById("sensitivityHead");
 
-    let savedPresets = readSaved();
     let last = null;
     let activeChart = "equity";
     let hoverPoint = null;
     let hoverCandidates = [];
     let timer = 0;
-    let pendingDeleteId = null;
-    let pendingDeleteTimer = 0;
-    let theme = localStorage.getItem("propFirmCalculatorTheme.v1") || "light";
-
-    function applyTheme(nextTheme) {
-      theme = nextTheme === "dark" ? "dark" : "light";
-      document.documentElement.dataset.theme = theme;
-      ui.themeIcon.textContent = theme === "dark" ? "light_mode" : "dark_mode";
-      ui.themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
-      localStorage.setItem("propFirmCalculatorTheme.v1", theme);
-      draw();
-    }
-
-    function toggleTheme() {
-      applyTheme(theme === "dark" ? "light" : "dark");
-    }
-    window.toggleTheme = toggleTheme;
+    document.documentElement.dataset.theme = "dark";
+    localStorage.removeItem("propFirmCalculatorTheme.v1");
 
     function cssVar(name) {
       return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -1458,20 +1795,6 @@
         green: cssVar("--green"),
         red: cssVar("--red")
       };
-    }
-
-    function readSaved() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    }
-
-    function writeSaved() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPresets));
     }
 
     function defaults() {
@@ -1760,7 +2083,6 @@
       last = { v, selected, rows, m };
       renderMetrics(v, selected, m);
       renderTables(v, selected, rows, m);
-      renderPresets();
       draw();
     }
 
@@ -1856,8 +2178,11 @@
     }
 
     function plotArea(width, height) {
+      if (width < 360) {
+        return { left: 58, right: width - 8, top: 70, bottom: height - 46, compact: true };
+      }
       if (width < 520) {
-        return { left: 52, right: width - 14, top: 62, bottom: height - 54, compact: true };
+        return { left: 54, right: width - 10, top: 58, bottom: height - 48, compact: true };
       }
       return { left: 70, right: width - 28, top: 46, bottom: height - 58 };
     }
@@ -2264,6 +2589,57 @@
       const colors = chartTheme();
       const compact = width < 520;
       ctx.font = `${compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+      if (compact) {
+        const entries = items.map((item) => (
+          Array.isArray(item) ? { text: item[0], color: item[1], marker: "dot" } : item
+        ));
+        const rows = [];
+        let current = [];
+        let currentWidth = 0;
+        entries.forEach((entry) => {
+          const entryWidth = ctx.measureText(entry.text).width + 30;
+          if (current.length && currentWidth + entryWidth > width - 22) {
+            rows.push(current);
+            current = [];
+            currentWidth = 0;
+          }
+          current.push({ ...entry, width: entryWidth });
+          currentWidth += entryWidth;
+        });
+        if (current.length) rows.push(current);
+
+        rows.slice(0, 2).forEach((row, rowIndex) => {
+          const totalWidth = row.reduce((sum, entry) => sum + entry.width, 0);
+          let x = Math.max(10, (width - totalWidth) / 2);
+          const y = 24 + rowIndex * 19;
+          row.forEach((entry) => {
+            const { text, color, marker = "dot", alpha = 1, width: entryWidth } = entry;
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            if (marker === "line" || marker === "dash") {
+              if (marker === "dash") ctx.setLineDash([5, 5]);
+              ctx.beginPath();
+              ctx.moveTo(x, y - 9);
+              ctx.lineTo(x + 14, y - 9);
+              ctx.stroke();
+            } else {
+              ctx.beginPath();
+              ctx.arc(x + 7, y - 9, 4, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.restore();
+            ctx.fillStyle = colors.muted;
+            ctx.textAlign = "left";
+            ctx.fillText(text, x + 22, y);
+            x += entryWidth;
+          });
+        });
+        return;
+      }
+
       ctx.textAlign = "right";
       let x = width - (compact ? 16 : 34);
       let y = compact ? 24 : 30;
@@ -2355,43 +2731,6 @@
       ctx.closePath();
     }
 
-    function allPresets() {
-      return [...BUILT_INS, ...savedPresets];
-    }
-
-    function renderPresets() {
-      const selected = ui.presetSelect.value;
-      ui.presetSelect.innerHTML = allPresets().map((preset) => (
-        `<option value="${preset.id}">${preset.builtIn ? "Template" : "Saved"}: ${escapeHtml(preset.name)}</option>`
-      )).join("");
-      if (allPresets().some((preset) => preset.id === selected)) ui.presetSelect.value = selected;
-      ui.savedCount.textContent = `${savedPresets.length} saved`;
-    }
-
-    function selectedPreset() {
-      return allPresets().find((preset) => preset.id === ui.presetSelect.value);
-    }
-
-    function savedIndex() {
-      return savedPresets.findIndex((preset) => preset.id === ui.presetSelect.value);
-    }
-
-    function saveCurrent(name) {
-      const clean = name.trim();
-      if (!clean) return toast("Name it first.");
-      const preset = {
-        id: `saved-${Date.now()}`,
-        name: clean,
-        builtIn: false,
-        values: values()
-      };
-      savedPresets.push(preset);
-      writeSaved();
-      renderPresets();
-      ui.presetSelect.value = preset.id;
-      toast("Saved.");
-    }
-
     function escapeHtml(value) {
       return String(value).replace(/[&<>"']/g, (char) => ({
         "&": "&amp;",
@@ -2453,81 +2792,9 @@
       draw();
     });
 
-    ui.presetSelect.addEventListener("change", () => {
-      const preset = selectedPreset();
-      if (!preset) return;
-      setValues(preset.values);
-      ui.presetName.value = preset.builtIn ? "" : preset.name;
-      render();
-    });
-
-    ui.savePreset.addEventListener("click", () => saveCurrent(ui.presetName.value));
-
-    ui.overwritePreset.addEventListener("click", () => {
-      const index = savedIndex();
-      if (index < 0) return toast("Select a saved preset.");
-      savedPresets[index].values = values();
-      savedPresets[index].name = ui.presetName.value.trim() || savedPresets[index].name;
-      writeSaved();
-      render();
-      toast("Overwritten.");
-    });
-
-    ui.renamePreset.addEventListener("click", () => {
-      const index = savedIndex();
-      const clean = ui.presetName.value.trim();
-      if (index < 0 || !clean) return toast("Select saved preset and name.");
-      savedPresets[index].name = clean;
-      writeSaved();
-      render();
-      toast("Renamed.");
-    });
-
-    ui.duplicatePreset.addEventListener("click", () => {
-      const preset = selectedPreset();
-      if (!preset) return;
-      const copy = {
-        id: `saved-${Date.now()}`,
-        name: `${preset.name} copy`,
-        builtIn: false,
-        values: { ...preset.values }
-      };
-      savedPresets.push(copy);
-      writeSaved();
-      renderPresets();
-      ui.presetSelect.value = copy.id;
-      ui.presetName.value = copy.name;
-      toast("Duplicated.");
-    });
-
-    ui.deletePreset.addEventListener("click", () => {
-      const index = savedIndex();
-      if (index < 0) return toast("Templates stay available.");
-      const preset = savedPresets[index];
-      if (pendingDeleteId !== preset.id) {
-        pendingDeleteId = preset.id;
-        ui.deletePreset.textContent = "Confirm";
-        clearTimeout(pendingDeleteTimer);
-        pendingDeleteTimer = setTimeout(() => {
-          pendingDeleteId = null;
-          ui.deletePreset.textContent = "Delete";
-        }, 3000);
-        return toast("Click Confirm to delete.");
-      }
-      savedPresets.splice(index, 1);
-      pendingDeleteId = null;
-      ui.deletePreset.textContent = "Delete";
-      clearTimeout(pendingDeleteTimer);
-      writeSaved();
-      render();
-      toast("Deleted.");
-    });
-
     window.addEventListener("resize", draw);
 
-    applyTheme(theme);
     setValues(defaults());
-    renderPresets();
     render();
   </script>
 </body>
