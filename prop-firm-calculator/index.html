@@ -1,0 +1,2534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prop Firm Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,600,0,0&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f8f6;
+      --panel: #ffffff;
+      --ink: #181918;
+      --muted: #70736f;
+      --line: #e7e4dc;
+      --soft: #f1f0eb;
+      --field: #f1f0eb;
+      --canvas: #ffffff;
+      --table-head: #fbfaf7;
+      --button-surface: #ffffff;
+      --axis: #4f5550;
+      --grid: #e7e4dc;
+      --blue: #2563eb;
+      --green: #15803d;
+      --red: #dc2626;
+      --amber: #b45309;
+      --shadow: 0 20px 60px rgba(24, 25, 24, 0.08);
+      --radius: 22px;
+      --small-radius: 12px;
+      --font: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0f100f;
+      --panel: #181a18;
+      --ink: #f3f3ef;
+      --muted: #a5aaa2;
+      --line: #30332e;
+      --soft: #22251f;
+      --field: #1f211d;
+      --canvas: #141613;
+      --table-head: #20231e;
+      --button-surface: #181a18;
+      --axis: #cfd4ca;
+      --grid: #2c302a;
+      --blue: #6ea8ff;
+      --green: #4ade80;
+      --red: #ef4444;
+      --amber: #fbbf24;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      color-scheme: light;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      font-variant-numeric: tabular-nums;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 5px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.7vw, 2.4rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .card {
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .controls {
+      position: sticky;
+      top: 18px;
+      padding: 16px;
+      align-self: stretch;
+    }
+
+    .results {
+      padding: 18px;
+    }
+
+    .section {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section:first-child {
+      padding-top: 0;
+    }
+
+    .section:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    h2,
+    h3 {
+      margin: 0;
+      font-size: 0.94rem;
+      letter-spacing: 0;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 40px;
+      border: 0;
+      border-radius: var(--small-radius);
+      background: var(--field);
+      color: var(--ink);
+      outline: none;
+      padding: 0 11px;
+      box-shadow: inset 0 0 0 1px var(--line);
+      transition: box-shadow 150ms ease, background 150ms ease;
+    }
+
+    input:focus,
+    select:focus {
+      background: var(--button-surface);
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.62), 0 0 0 4px rgba(37, 99, 235, 0.10);
+    }
+
+    .input-with-unit {
+      position: relative;
+    }
+
+    .input-with-unit input {
+      padding-right: 32px;
+    }
+
+    .field-unit {
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      pointer-events: none;
+    }
+
+    input[type="range"] {
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      accent-color: var(--ink);
+    }
+
+    .range-control {
+      position: relative;
+      height: 38px;
+      margin-top: 2px;
+      --win-rate-fill: 46%;
+      --win-rate-color: var(--ink);
+    }
+
+    .range-track,
+    .range-fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 12px;
+      border-radius: 999px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .range-track {
+      background: rgba(24, 25, 24, 0.14);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .range-fill {
+      right: auto;
+      width: var(--win-rate-fill);
+      background: var(--win-rate-color);
+    }
+
+    .range-thumb {
+      position: absolute;
+      left: var(--win-rate-fill);
+      top: 50%;
+      width: 22px;
+      height: 22px;
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+      background: var(--panel);
+      box-shadow: 0 7px 18px rgba(24, 25, 24, 0.26);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    #winRate {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      opacity: 0;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .range-control:focus-within .range-thumb {
+      box-shadow: 0 7px 18px rgba(24, 25, 24, 0.26), 0 0 0 5px rgba(37, 99, 235, 0.14);
+    }
+
+    .preset-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .preset-row + .preset-row {
+      margin-top: 8px;
+    }
+
+    .button-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .button-pair + .button-pair,
+    .preset-row + .button-pair {
+      margin-top: 8px;
+    }
+
+    .button,
+    .ghost,
+    .tab,
+    .theme-toggle {
+      min-height: 40px;
+      border-radius: var(--small-radius);
+      font-weight: 750;
+      transition: transform 150ms ease, background 150ms ease, color 150ms ease;
+    }
+
+    .button {
+      padding: 0 16px;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .button:hover,
+    .ghost:hover,
+    .tab:hover,
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .ghost {
+      padding: 0 12px;
+      background: var(--button-surface);
+      color: var(--ink);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .theme-toggle {
+      display: inline-grid;
+      place-items: center;
+      min-height: 0;
+      width: 42px;
+      height: 42px;
+      padding: 0 13px;
+      background: var(--button-surface);
+      color: var(--ink);
+      box-shadow: inset 0 0 0 1px var(--line);
+      white-space: nowrap;
+    }
+
+    .material-symbols-rounded {
+      font-family: "Material Symbols Rounded";
+      font-weight: normal;
+      font-style: normal;
+      font-size: 21px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: grid;
+      place-items: center;
+      width: 1em;
+      height: 1em;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-feature-settings: "liga";
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "liga";
+    }
+
+    #themeIcon {
+      transform: translateX(-2px);
+    }
+
+    .danger {
+      color: var(--red);
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.24);
+    }
+
+    details {
+      border-radius: 16px;
+      background: var(--soft);
+      padding: 0 12px;
+    }
+
+    details + details {
+      margin-top: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--ink);
+      font-size: 0.84rem;
+      font-weight: 760;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    details[open] summary::after {
+      content: "-";
+    }
+
+    .details-body {
+      padding: 0 0 12px;
+    }
+
+    details:not([open]) .details-body {
+      display: none;
+    }
+
+    .score {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .hero-metric,
+    .mini-metric {
+      border-radius: 16px;
+      background: var(--soft);
+      padding: 13px;
+      min-height: 94px;
+      min-width: 0;
+    }
+
+    .hero-metric {
+      display: grid;
+      align-content: space-between;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 780;
+    }
+
+    .metric-value {
+      margin-top: 7px;
+      font-size: clamp(1.2rem, 2vw, 1.95rem);
+      line-height: 0.98;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .mini-metric .metric-value {
+      font-size: clamp(1.2rem, 2vw, 1.95rem);
+    }
+
+    .metric-note {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.25;
+    }
+
+    .hero-metric .metric-note,
+    .mini-metric .metric-note {
+      display: none;
+    }
+
+    .mini-metric .metric-note.unit {
+      display: block;
+      margin-top: 7px;
+      font-weight: 700;
+    }
+
+    .prob-bars {
+      margin-top: 12px;
+    }
+
+    .bar-line {
+      display: flex;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(24, 25, 24, 0.12);
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--green);
+      transition: width 180ms ease;
+    }
+
+    .bar-fill.fail {
+      background: var(--red);
+    }
+
+    .bar-fill.expired {
+      background: rgba(112, 115, 111, 0.34);
+    }
+
+    .insight-card {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+      margin-bottom: 16px;
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .insight-main {
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .insight-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .insight-main p {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(1.1rem, 2vw, 1.55rem);
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .chart-card {
+      border-radius: 18px;
+      background: var(--soft);
+      padding: 14px;
+    }
+
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+
+    .chart-actions {
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+      min-width: max-content;
+    }
+
+    .chart-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .tab {
+      min-height: 32px;
+      padding: 0 10px;
+      background: var(--button-surface);
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .tab.active {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    canvas {
+      width: 100%;
+      height: 360px;
+      display: block;
+      border-radius: 14px;
+      background: var(--canvas);
+    }
+
+    .collapsed-data {
+      margin-top: 12px;
+      min-width: 0;
+    }
+
+    .table-scroll {
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border-radius: 14px;
+      background: var(--canvas);
+      box-shadow: inset 0 0 0 1px var(--line);
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+
+    table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child,
+    td:first-child {
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--table-head);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .heatmap-table {
+      min-width: 620px;
+      table-layout: fixed;
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      text-align: center;
+      padding: 9px 8px;
+    }
+
+    .heatmap-table th:first-child,
+    .heatmap-table td:first-child {
+      width: 88px;
+      text-align: left;
+      font-weight: 800;
+      color: var(--axis);
+      background: var(--table-head);
+    }
+
+    .heatmap-cell {
+      color: #111;
+      font-weight: 800;
+      border-right: 1px solid color-mix(in srgb, var(--canvas), transparent 72%);
+    }
+
+    .heatmap-cell.low {
+      color: #fff;
+    }
+
+    .heatmap-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translate(-50%, 16px);
+      opacity: 0;
+      pointer-events: none;
+      border-radius: 999px;
+      background: rgba(24, 25, 24, 0.92);
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .disclaimer {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .disclaimer strong {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    @media (max-width: 980px) {
+      .top,
+      .layout,
+      .insight-card {
+        grid-template-columns: 1fr;
+      }
+
+      .results {
+        order: 1;
+      }
+
+      .controls {
+        order: 2;
+      }
+
+      .score {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .top {
+        align-items: flex-start;
+      }
+
+      .controls {
+        position: static;
+        align-self: auto;
+      }
+    }
+
+    @media (max-width: 620px) {
+      :root {
+        --radius: 18px;
+        --small-radius: 11px;
+      }
+
+      .app {
+        width: 100%;
+        padding: 12px 10px 28px;
+      }
+
+      .grid,
+      .preset-row {
+        grid-template-columns: 1fr;
+      }
+
+      .layout {
+        gap: 12px;
+      }
+
+      .top {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .brand {
+        gap: 4px;
+      }
+
+      .brand h1 {
+        font-size: clamp(1.5rem, 8vw, 2rem);
+        line-height: 1.05;
+        text-wrap: balance;
+      }
+
+      .brand p {
+        max-width: 32ch;
+        font-size: 0.82rem;
+        line-height: 1.35;
+        text-wrap: pretty;
+      }
+
+      .theme-toggle {
+        width: 40px;
+        height: 40px;
+      }
+
+      .results,
+      .controls {
+        padding: 12px;
+        box-shadow: 0 12px 34px rgba(24, 25, 24, 0.08);
+      }
+
+      :root[data-theme="dark"] .results,
+      :root[data-theme="dark"] .controls {
+        box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+      }
+
+      .section {
+        padding: 12px 0;
+      }
+
+      .section-title {
+        margin-bottom: 8px;
+      }
+
+      input,
+      select {
+        height: 44px;
+        font-size: 1rem;
+      }
+
+      .range-control {
+        height: 44px;
+      }
+
+      .range-track,
+      .range-fill {
+        height: 10px;
+      }
+
+      .range-thumb {
+        width: 24px;
+        height: 24px;
+      }
+
+      .insight-card {
+        padding: 14px;
+        margin-bottom: 10px;
+        border-radius: 16px;
+      }
+
+      .insight-label {
+        font-size: 0.68rem;
+      }
+
+      .insight-main p {
+        max-width: none;
+        font-size: clamp(1.24rem, 6.2vw, 1.62rem);
+        line-height: 1.18;
+        overflow-wrap: anywhere;
+      }
+
+      .score {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .hero-metric {
+        grid-column: 1 / -1;
+      }
+
+      .hero-metric,
+      .mini-metric {
+        min-height: 78px;
+        padding: 10px;
+        border-radius: 14px;
+      }
+
+      .metric-label {
+        min-height: 2.1em;
+        font-size: 0.64rem;
+        line-height: 1.12;
+      }
+
+      .metric-value,
+      .mini-metric .metric-value {
+        margin-top: 6px;
+        font-size: clamp(1.18rem, 7vw, 1.55rem);
+      }
+
+      .mini-metric .metric-note.unit {
+        margin-top: 4px;
+        font-size: 0.66rem;
+      }
+
+      .prob-bars {
+        margin-top: 9px;
+      }
+
+      .bar-line {
+        height: 7px;
+      }
+
+      .chart-card {
+        padding: 10px;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .chart-head {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .chart-head h2 {
+        font-size: 0.98rem;
+      }
+
+      .chart-head p {
+        font-size: 0.76rem;
+        line-height: 1.35;
+      }
+
+      .chart-actions {
+        gap: 8px;
+        justify-items: stretch;
+        min-width: 0;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        flex-wrap: initial;
+        gap: 5px;
+        justify-content: stretch;
+        border-radius: 13px;
+        background: var(--canvas);
+        padding: 4px;
+        box-shadow: inset 0 0 0 1px var(--line);
+      }
+
+      .tab {
+        min-height: 36px;
+        padding: 0 4px;
+        border-radius: 10px;
+        font-size: 0.72rem;
+      }
+
+      canvas {
+        width: 100%;
+        max-width: 100%;
+        height: min(58vh, 340px);
+        min-height: 280px;
+        border-radius: 13px;
+      }
+
+      .collapsed-data {
+        margin-top: 10px;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      details {
+        border-radius: 14px;
+        padding: 0 10px;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      summary {
+        min-height: 44px;
+        font-size: 0.82rem;
+      }
+
+      .table-scroll {
+        width: 100%;
+        max-width: calc(100vw - 44px);
+        border-radius: 12px;
+      }
+
+      table {
+        width: max-content;
+        min-width: 560px;
+        font-size: 0.78rem;
+      }
+
+      .heatmap-table {
+        min-width: 560px;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .app {
+        padding-inline: 8px;
+      }
+
+      .score {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-metric {
+        grid-column: auto;
+      }
+
+      .hero-metric,
+      .mini-metric {
+        min-height: 72px;
+      }
+
+      .metric-label {
+        min-height: 0;
+      }
+
+      .metric-value,
+      .mini-metric .metric-value {
+        font-size: 1.6rem;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <h1>Prop firm calculator</h1>
+        <p>Calculate your target odds, drawdown risk, and expected edge before you size up.</p>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" onclick="toggleTheme()">
+        <span class="material-symbols-rounded" id="themeIcon" aria-hidden="true">dark_mode</span>
+      </button>
+    </header>
+
+    <div class="layout">
+      <aside class="card controls">
+        <section class="section">
+          <div class="section-title">
+            <h2>Preset</h2>
+            <span class="hint" id="savedCount">0 saved</span>
+          </div>
+          <select id="presetSelect" aria-label="Preset"></select>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>Account</h2>
+            <span class="hint">Rules and goal</span>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="startingBalance">Balance</label>
+              <input id="startingBalance" type="number" min="0" step="1000">
+            </div>
+            <div>
+              <label for="profitTarget" id="targetLabel">Target</label>
+              <input id="profitTarget" type="number" min="0" step="100">
+            </div>
+            <div>
+              <label for="targetDays">Target days</label>
+              <input id="targetDays" type="number" min="1" step="1">
+            </div>
+            <div>
+              <label for="maxLoss">Max loss</label>
+              <input id="maxLoss" type="number" min="1" step="100">
+            </div>
+            <div>
+              <label for="drawdownType">Drawdown</label>
+              <select id="drawdownType">
+                <option value="static">Static</option>
+                <option value="trailing-eod">EOD trail</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>Strategy</h2>
+          </div>
+          <div class="grid">
+            <div class="wide">
+              <label for="winRate">Win rate <span id="winRateText"></span></label>
+              <div class="range-control" id="winRateControl">
+                <div class="range-track"></div>
+                <div class="range-fill" id="winRateFill"></div>
+                <div class="range-thumb" id="winRateThumb"></div>
+                <input id="winRate" type="range" min="20" max="85" step="1">
+              </div>
+            </div>
+            <div>
+              <label for="riskPerTrade">Risk per trade</label>
+              <input id="riskPerTrade" type="number" min="1" step="10">
+            </div>
+            <div>
+              <label for="rewardRisk">Reward / risk</label>
+              <input id="rewardRisk" type="number" min="0.1" step="0.1">
+            </div>
+            <div>
+              <label for="tradesPerDay">Trades per day</label>
+              <input id="tradesPerDay" type="number" min="1" step="1">
+            </div>
+            <div>
+              <label for="slippageTicks">Slippage ticks</label>
+              <input id="slippageTicks" type="number" min="0" step="1" placeholder="Ticks per trade">
+            </div>
+            <div>
+              <label for="commissionFees">Commission / fees</label>
+              <div class="input-with-unit">
+                <input id="commissionFees" type="number" min="0" step="0.01" placeholder="Dollars per trade">
+                <span class="field-unit">$</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <details>
+            <summary>Advanced</summary>
+            <div class="details-body">
+              <div class="grid">
+                <div>
+                  <label for="minDays">Min qualifying days</label>
+                  <input id="minDays" type="number" min="1" step="1">
+                </div>
+                <div>
+                  <label for="maxTrades">Max trades</label>
+                  <input id="maxTrades" type="number" min="0" step="1">
+                </div>
+                <div>
+                  <label for="runs">Runs</label>
+                  <input id="runs" type="number" min="100" max="50000" step="100">
+                </div>
+                <div>
+                  <label for="sweepMin">Sweep min</label>
+                  <input id="sweepMin" type="number" min="1" max="99" step="1">
+                </div>
+                <div>
+                  <label for="sweepMax">Sweep max</label>
+                  <input id="sweepMax" type="number" min="1" max="99" step="1">
+                </div>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Save and manage presets</summary>
+            <div class="details-body">
+              <div class="preset-row">
+                <input id="presetName" type="text" placeholder="Name current setup">
+                <button class="ghost" id="savePreset" type="button">Save</button>
+              </div>
+              <div class="button-pair">
+                <button class="ghost" id="overwritePreset" type="button">Overwrite</button>
+                <button class="ghost" id="renamePreset" type="button">Rename</button>
+              </div>
+              <div class="button-pair">
+                <button class="ghost" id="duplicatePreset" type="button">Duplicate</button>
+                <button class="ghost danger" id="deletePreset" type="button">Delete</button>
+              </div>
+            </div>
+          </details>
+        </section>
+      </aside>
+
+      <section class="card results">
+        <article class="insight-card" aria-live="polite">
+          <div class="insight-main">
+            <div class="insight-label">Summary</div>
+            <p id="plainInsight">Adjust inputs to update the summary.</p>
+          </div>
+        </article>
+
+        <div class="score">
+          <article class="hero-metric">
+            <div>
+              <div class="metric-label" id="passMetricLabel">Target probability</div>
+              <div class="metric-value" id="passRate">--</div>
+              <div class="metric-note" id="passNote">Target-first paths</div>
+            </div>
+            <div class="prob-bars">
+              <div class="bar-line">
+                <div class="bar-fill" id="passBar"></div>
+                <div class="bar-fill fail" id="failBar"></div>
+                <div class="bar-fill expired" id="expiredBar"></div>
+              </div>
+            </div>
+          </article>
+          <article class="mini-metric">
+            <div class="metric-label">Risk of ruin</div>
+            <div class="metric-value" id="failRate">--</div>
+            <div class="metric-note" id="failNote">Drawdown-first</div>
+          </article>
+          <article class="mini-metric">
+            <div class="metric-label">Expected value</div>
+            <div class="metric-value" id="evTrade">--</div>
+            <div class="metric-note unit">per trade</div>
+          </article>
+        </div>
+
+        <article class="chart-card">
+          <div class="chart-head">
+            <div>
+              <h2 id="chartTitle">Equity paths</h2>
+              <p id="chartSubtitle">Representative Monte Carlo paths with target and max-loss lines.</p>
+            </div>
+            <div class="chart-actions">
+              <div class="tabs" aria-label="Chart type">
+                <button class="tab active" data-chart="equity" type="button">Paths</button>
+                <button class="tab" data-chart="probability" type="button">Odds</button>
+                <button class="tab" data-chart="outcomes" type="button">Trades</button>
+                <button class="tab" data-chart="frontier" type="button">Frontier</button>
+              </div>
+            </div>
+          </div>
+          <canvas id="chart" width="1200" height="540"></canvas>
+        </article>
+
+        <div class="collapsed-data">
+          <details>
+            <summary>Win-rate heatmap</summary>
+            <div class="details-body">
+              <p class="heatmap-note">Target probability by win rate and risk per trade.</p>
+              <div class="table-scroll">
+                <table class="heatmap-table">
+                  <thead id="sensitivityHead"></thead>
+                  <tbody id="sensitivityBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+          <details>
+            <summary>Monte Carlo summary</summary>
+            <div class="details-body">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Metric</th>
+                      <th>Value</th>
+                      <th>Meaning</th>
+                    </tr>
+                  </thead>
+                  <tbody id="summaryBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+        </div>
+      </section>
+    </div>
+
+    <p class="disclaimer">
+      <strong>Not financial advice.</strong> This calculator is for educational planning and risk modeling only.
+      Trading futures and prop-firm accounts involves substantial risk, and results are never guaranteed.
+    </p>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "propFirmCalculatorPresets.v2";
+    const SLIPPAGE_TICK_VALUE = 0.5;
+    const BUILT_INS = [
+      {
+        id: "template-25k",
+        name: "$25k account",
+        builtIn: true,
+        values: {
+          startingBalance: 25000,
+          profitTarget: 1250,
+          maxLoss: 1000,
+          drawdownType: "trailing-eod",
+          minDays: 5,
+          targetDays: 30,
+          winRate: 50,
+          riskPerTrade: 100,
+          rewardRisk: 2,
+          tradesPerDay: 2,
+          slippageTicks: 1,
+          commissionFees: 0.67,
+          maxTrades: 0,
+          runs: 3000,
+          sweepMin: 35,
+          sweepMax: 70
+        }
+      },
+      {
+        id: "template-50k",
+        name: "$50k account",
+        builtIn: true,
+        values: {
+          startingBalance: 50000,
+          profitTarget: 3000,
+          maxLoss: 2000,
+          drawdownType: "trailing-eod",
+          minDays: 5,
+          targetDays: 30,
+          winRate: 50,
+          riskPerTrade: 100,
+          rewardRisk: 2,
+          tradesPerDay: 2,
+          slippageTicks: 1,
+          commissionFees: 0.67,
+          maxTrades: 0,
+          runs: 3000,
+          sweepMin: 35,
+          sweepMax: 70
+        }
+      },
+      {
+        id: "template-100k",
+        name: "$100k account",
+        builtIn: true,
+        values: {
+          startingBalance: 100000,
+          profitTarget: 6000,
+          maxLoss: 3000,
+          drawdownType: "trailing-eod",
+          minDays: 5,
+          targetDays: 30,
+          winRate: 50,
+          riskPerTrade: 100,
+          rewardRisk: 2,
+          tradesPerDay: 2,
+          slippageTicks: 1,
+          commissionFees: 0.67,
+          maxTrades: 0,
+          runs: 3000,
+          sweepMin: 35,
+          sweepMax: 70
+        }
+      },
+      {
+        id: "template-150k",
+        name: "$150k account",
+        builtIn: true,
+        values: {
+          startingBalance: 150000,
+          profitTarget: 9000,
+          maxLoss: 4500,
+          drawdownType: "trailing-eod",
+          minDays: 5,
+          targetDays: 30,
+          winRate: 50,
+          riskPerTrade: 100,
+          rewardRisk: 2,
+          tradesPerDay: 2,
+          slippageTicks: 1,
+          commissionFees: 0.67,
+          maxTrades: 0,
+          runs: 3000,
+          sweepMin: 35,
+          sweepMax: 70
+        }
+      }
+    ];
+
+    const fields = [
+      "startingBalance",
+      "profitTarget",
+      "maxLoss",
+      "drawdownType",
+      "minDays",
+      "targetDays",
+      "winRate",
+      "riskPerTrade",
+      "rewardRisk",
+      "tradesPerDay",
+      "slippageTicks",
+      "commissionFees",
+      "maxTrades",
+      "runs",
+      "sweepMin",
+      "sweepMax"
+    ];
+
+    const input = {};
+    fields.forEach((id) => input[id] = document.getElementById(id));
+
+    const ui = {
+      presetSelect: document.getElementById("presetSelect"),
+      presetName: document.getElementById("presetName"),
+      savedCount: document.getElementById("savedCount"),
+      savePreset: document.getElementById("savePreset"),
+      overwritePreset: document.getElementById("overwritePreset"),
+      renamePreset: document.getElementById("renamePreset"),
+      duplicatePreset: document.getElementById("duplicatePreset"),
+      deletePreset: document.getElementById("deletePreset"),
+      themeToggle: document.getElementById("themeToggle"),
+      themeIcon: document.getElementById("themeIcon"),
+      winRateControl: document.getElementById("winRateControl"),
+      winRateText: document.getElementById("winRateText"),
+      passRate: document.getElementById("passRate"),
+      failRate: document.getElementById("failRate"),
+      evTrade: document.getElementById("evTrade"),
+      targetLabel: document.getElementById("targetLabel"),
+      passMetricLabel: document.getElementById("passMetricLabel"),
+      passNote: document.getElementById("passNote"),
+      failNote: document.getElementById("failNote"),
+      plainInsight: document.getElementById("plainInsight"),
+      passBar: document.getElementById("passBar"),
+      failBar: document.getElementById("failBar"),
+      expiredBar: document.getElementById("expiredBar"),
+      chart: document.getElementById("chart"),
+      chartTitle: document.getElementById("chartTitle"),
+      chartSubtitle: document.getElementById("chartSubtitle"),
+      sensitivityBody: document.getElementById("sensitivityBody"),
+      summaryBody: document.getElementById("summaryBody"),
+      toast: document.getElementById("toast")
+    };
+    ui.sensitivityHead = document.getElementById("sensitivityHead");
+
+    let savedPresets = readSaved();
+    let last = null;
+    let activeChart = "equity";
+    let hoverPoint = null;
+    let hoverCandidates = [];
+    let timer = 0;
+    let pendingDeleteId = null;
+    let pendingDeleteTimer = 0;
+    let theme = localStorage.getItem("propFirmCalculatorTheme.v1") || "light";
+
+    function applyTheme(nextTheme) {
+      theme = nextTheme === "dark" ? "dark" : "light";
+      document.documentElement.dataset.theme = theme;
+      ui.themeIcon.textContent = theme === "dark" ? "light_mode" : "dark_mode";
+      ui.themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+      localStorage.setItem("propFirmCalculatorTheme.v1", theme);
+      draw();
+    }
+
+    function toggleTheme() {
+      applyTheme(theme === "dark" ? "light" : "dark");
+    }
+    window.toggleTheme = toggleTheme;
+
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function chartTheme() {
+      return {
+        canvas: cssVar("--canvas"),
+        panel: cssVar("--panel"),
+        ink: cssVar("--ink"),
+        muted: cssVar("--muted"),
+        line: cssVar("--line"),
+        axis: cssVar("--axis"),
+        grid: cssVar("--grid"),
+        blue: cssVar("--blue"),
+        green: cssVar("--green"),
+        red: cssVar("--red")
+      };
+    }
+
+    function readSaved() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function writeSaved() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPresets));
+    }
+
+    function defaults() {
+      return { ...BUILT_INS[0].values };
+    }
+
+    function setValues(values) {
+      const migrated = { ...values };
+      if (migrated.costPerTrade !== undefined && migrated.commissionFees === undefined) {
+        migrated.commissionFees = migrated.costPerTrade;
+      }
+      if (migrated.slippageTicks === undefined) migrated.slippageTicks = 0;
+      if (migrated.targetDays === undefined && migrated.maxDays !== undefined) migrated.targetDays = migrated.maxDays;
+      const merged = { ...defaults(), ...migrated };
+      fields.forEach((id) => input[id].value = merged[id]);
+      ui.winRateText.textContent = `${merged.winRate}%`;
+      updateWinRateSlider(merged.winRate);
+    }
+
+    function updateWinRateSlider(value) {
+      const min = Number(input.winRate.min) || 0;
+      const max = Number(input.winRate.max) || 100;
+      const percent = ((Number(value) - min) / Math.max(1, max - min)) * 100;
+      ui.winRateControl.style.setProperty("--win-rate-fill", `${clamp(percent, 0, 100)}%`);
+    }
+
+    function values() {
+      const out = {};
+      fields.forEach((id) => {
+        out[id] = input[id].type === "number" || input[id].type === "range"
+          ? Number(input[id].value)
+          : input[id].value;
+      });
+      out.winRate = clamp(out.winRate, 1, 99);
+      out.minDays = Math.max(1, Math.round(out.minDays || 1));
+      out.targetDays = Math.max(out.minDays, Math.round(out.targetDays || out.minDays));
+      out.tradesPerDay = Math.max(1, Math.round(out.tradesPerDay || 1));
+      out.slippageTicks = Math.max(0, Math.round(Number(out.slippageTicks) || 0));
+      out.commissionFees = Math.max(0, Number(out.commissionFees) || 0);
+      out.costPerTrade = out.commissionFees + out.slippageTicks * SLIPPAGE_TICK_VALUE;
+      if (!["static", "trailing-eod"].includes(out.drawdownType)) out.drawdownType = "trailing-eod";
+      out.maxTrades = Math.max(0, Math.round(out.maxTrades || 0));
+      out.runs = clamp(Math.round(out.runs || 1000), 100, 50000);
+      out.sweepMin = clamp(Math.round(out.sweepMin || 35), 1, 99);
+      out.sweepMax = clamp(Math.round(out.sweepMax || 70), 1, 99);
+      if (out.sweepMin > out.sweepMax) [out.sweepMin, out.sweepMax] = [out.sweepMax, out.sweepMin];
+      return out;
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function money(value, cents = false) {
+      const sign = value < 0 ? "-" : "";
+      const abs = Math.abs(value);
+      return sign + "$" + abs.toLocaleString(undefined, { maximumFractionDigits: cents ? 2 : 0 });
+    }
+
+    function pct(value) {
+      if (!Number.isFinite(value)) return "--";
+      return (value * 100).toFixed(value < 0.1 ? 1 : 0) + "%";
+    }
+
+    function percentile(list, p) {
+      if (!list.length) return 0;
+      const sorted = [...list].sort((a, b) => a - b);
+      const index = (sorted.length - 1) * p;
+      const low = Math.floor(index);
+      const high = Math.ceil(index);
+      return low === high ? sorted[low] : sorted[low] + (sorted[high] - sorted[low]) * (index - low);
+    }
+
+    function math(v, winRate) {
+      const p = winRate / 100;
+      const win = v.riskPerTrade * v.rewardRisk - v.costPerTrade;
+      const loss = -v.riskPerTrade - v.costPerTrade;
+      const ev = p * win + (1 - p) * loss;
+      const breakEven = (v.riskPerTrade + v.costPerTrade) / (v.riskPerTrade * v.rewardRisk + v.riskPerTrade);
+      return { p, win, loss, ev, breakEven };
+    }
+
+    function streakRisk(lossRate, trades, length) {
+      const windows = Math.max(1, trades - length + 1);
+      return 1 - Math.pow(1 - Math.pow(lossRate, length), windows);
+    }
+
+    function seedFor(v, winRate, index) {
+      const parts = [
+        winRate,
+        v.riskPerTrade,
+        v.rewardRisk,
+        v.tradesPerDay,
+        v.slippageTicks,
+        v.commissionFees,
+        index
+      ].join("|");
+      let hash = 2166136261;
+      for (let i = 0; i < parts.length; i++) {
+        hash ^= parts.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    }
+
+    function seededRandom(seed) {
+      let state = seed >>> 0;
+      return () => {
+        state += 0x6D2B79F5;
+        let next = state;
+        next = Math.imul(next ^ (next >>> 15), next | 1);
+        next ^= next + Math.imul(next ^ (next >>> 7), next | 61);
+        return ((next ^ (next >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function simulatePath(v, winRate, includePath, rng) {
+      const m = math(v, winRate);
+      const dailyLimit = v.targetDays * v.tradesPerDay;
+      const tradeLimit = v.maxTrades > 0 ? Math.min(v.maxTrades, dailyLimit) : dailyLimit;
+      let pnl = 0;
+      let maxPnl = 0;
+      let eodHigh = 0;
+      let currentDay = 1;
+      let maxDrawdown = 0;
+      const path = includePath ? [{ trade: 0, day: 0, pnl: 0 }] : null;
+
+      for (let trade = 1; trade <= tradeLimit; trade++) {
+        const day = Math.floor((trade - 1) / v.tradesPerDay) + 1;
+        if (day !== currentDay) {
+          if (v.drawdownType === "trailing-eod") eodHigh = Math.max(eodHigh, pnl);
+          currentDay = day;
+        }
+
+        pnl += rng() < m.p ? m.win : m.loss;
+        maxPnl = Math.max(maxPnl, pnl);
+        maxDrawdown = Math.max(maxDrawdown, maxPnl - pnl);
+        if (path) path.push({ trade, day, pnl });
+
+        let lossLine = -v.maxLoss;
+        if (v.drawdownType === "trailing-eod") lossLine = eodHigh - v.maxLoss;
+
+        if (pnl <= lossLine) return { outcome: "fail", pnl, trade, day, maxDrawdown, path };
+        if (pnl >= v.profitTarget && day >= v.minDays) return { outcome: "pass", pnl, trade, day, maxDrawdown, path };
+      }
+
+      const finalDay = Math.min(v.targetDays, Math.ceil(tradeLimit / v.tradesPerDay));
+      return {
+        outcome: pnl >= v.profitTarget && finalDay >= v.minDays ? "pass" : "expired",
+        pnl,
+        trade: tradeLimit,
+        day: finalDay,
+        maxDrawdown,
+        path
+      };
+    }
+
+    function run(v, winRate, runs, pathCount) {
+      const counts = { pass: 0, fail: 0, expired: 0 };
+      const finals = [];
+      const drawdowns = [];
+      const passDays = [];
+      const passTrades = [];
+      const paths = [];
+      for (let i = 0; i < runs; i++) {
+        const result = simulatePath(v, winRate, paths.length < pathCount, seededRandom(seedFor(v, winRate, i)));
+        counts[result.outcome]++;
+        finals.push(result.pnl);
+        drawdowns.push(result.maxDrawdown);
+        if (result.outcome === "pass") {
+          passDays.push(result.day);
+          passTrades.push(result.trade);
+        }
+        if (result.path) paths.push(result.path);
+      }
+      const total = Math.max(1, runs);
+      return {
+        winRate,
+        runs,
+        counts,
+        finals,
+        drawdowns,
+        paths,
+        passDays,
+        passTrades,
+        passRate: counts.pass / total,
+        failRate: counts.fail / total,
+        expiredRate: counts.expired / total,
+        avgFinal: finals.reduce((sum, item) => sum + item, 0) / total,
+        avgDrawdown: drawdowns.reduce((sum, item) => sum + item, 0) / total,
+        medianFinal: percentile(finals, 0.5),
+        medianDrawdown: percentile(drawdowns, 0.5),
+        medianPassDays: percentile(passDays, 0.5),
+        p25PassDays: percentile(passDays, 0.25),
+        p75PassDays: percentile(passDays, 0.75),
+        medianPassTrades: percentile(passTrades, 0.5),
+        p10: percentile(finals, 0.1),
+        p90: percentile(finals, 0.9),
+        best: Math.max(...finals),
+        worst: Math.min(...finals)
+      };
+    }
+
+    function sweep(v) {
+      const step = v.sweepMax - v.sweepMin <= 20 ? 2 : 5;
+      const rates = [];
+      for (let rate = v.sweepMin; rate <= v.sweepMax; rate += step) rates.push(rate);
+      if (rates[rates.length - 1] !== v.sweepMax) rates.push(v.sweepMax);
+      const runs = Math.min(v.runs, 2000);
+      return rates.map((rate) => {
+        const result = run(v, rate, runs, 0);
+        return { ...result, ev: math(v, rate).ev };
+      });
+    }
+
+    function dayText(days) {
+      if (!Number.isFinite(days)) return "not viable";
+      const rounded = Math.max(1, Math.round(days));
+      return `${rounded} trading ${rounded === 1 ? "day" : "days"}`;
+    }
+
+    function rrText(value) {
+      return `${Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 })}R`;
+    }
+
+    function actionText(selected, m) {
+      if (m.ev <= 0) {
+        return "Not viable yet. Improve win rate, reward/risk, fees, or trade frequency.";
+      }
+      if (selected.failRate >= 0.25) {
+        return "Risk is high. Lower risk per trade or wait for better setups.";
+      }
+      if (selected.passRate >= 0.75 && selected.failRate <= 0.1) {
+        return "Viable on paper. Keep fills, fees, and discipline close to this model.";
+      }
+      return "Thin edge. Small execution mistakes can erase the advantage.";
+    }
+
+    function heatmapColor(value) {
+      const t = clamp(value, 0, 1);
+      const hue = 2 + t * 140;
+      const saturation = 74 - t * 14;
+      const lightness = 44 + t * 16;
+      return `hsl(${hue} ${saturation}% ${lightness}%)`;
+    }
+
+    function renderSensitivityHeatmap(v, rows) {
+      const rates = rows.map((row) => row.winRate);
+      const multipliers = [0.5, 0.75, 1, 1.25, 1.5, 2];
+      const risks = multipliers
+        .map((multiple) => Math.max(1, Math.round(v.riskPerTrade * multiple)))
+        .filter((risk, index, list) => list.indexOf(risk) === index);
+      const runs = Math.min(v.runs, 700);
+
+      ui.sensitivityHead.innerHTML = `
+        <tr>
+          <th>Risk</th>
+          ${rates.map((rate) => `<th>${rate}%</th>`).join("")}
+        </tr>
+      `;
+      ui.sensitivityBody.innerHTML = risks.map((risk) => {
+        const values = { ...v, riskPerTrade: risk };
+        const cells = rates.map((rate) => {
+          const sim = run(values, rate, runs, 0);
+          const pass = sim.passRate;
+          return `<td class="heatmap-cell ${pass < 0.45 ? "low" : ""}" style="background:${heatmapColor(pass)}" title="${pct(pass)} target, ${pct(sim.failRate)} ruin">${pct(pass)}</td>`;
+        }).join("");
+        return `
+          <tr>
+            <td>${money(risk)}</td>
+            ${cells}
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function render() {
+      const v = values();
+      ui.winRateText.textContent = `${v.winRate}%`;
+      input.targetDays.value = v.targetDays;
+      input.minDays.value = v.minDays;
+      updateWinRateSlider(v.winRate);
+      const selected = run(v, v.winRate, v.runs, 30);
+      const rows = sweep(v);
+      const m = math(v, v.winRate);
+      last = { v, selected, rows, m };
+      renderMetrics(v, selected, m);
+      renderTables(v, selected, rows, m);
+      renderPresets();
+      draw();
+    }
+
+    function renderMetrics(v, selected, m) {
+      const goalWord = "target";
+      ui.targetLabel.textContent = "Target";
+      ui.passMetricLabel.textContent = "Target probability";
+      ui.passRate.textContent = pct(selected.passRate);
+      ui.failRate.textContent = pct(selected.failRate);
+      ui.evTrade.textContent = money(m.ev, true);
+      ui.passNote.textContent = `Within ${dayText(v.targetDays)}`;
+      ui.failNote.textContent = `${selected.counts.fail.toLocaleString()} drawdown-first`;
+      ui.passBar.style.width = `${selected.passRate * 100}%`;
+      ui.failBar.style.width = `${selected.failRate * 100}%`;
+      ui.expiredBar.style.width = `${selected.expiredRate * 100}%`;
+      ui.passBar.parentElement.title = `${selected.counts.pass.toLocaleString()} of ${selected.runs.toLocaleString()} ${goalWord}-first paths, ${pct(selected.failRate)} ruin, ${pct(selected.expiredRate)} expired`;
+      ui.plainInsight.textContent = `${pct(selected.passRate)} chance to reach ${money(v.profitTarget)} within ${dayText(v.targetDays)}.`;
+    }
+
+    function renderTables(v, selected, rows, m) {
+      const totalTrades = v.maxTrades > 0 ? v.maxTrades : v.targetDays * v.tradesPerDay;
+      const streakLength = Math.max(2, Math.ceil(v.maxLoss / Math.max(1, v.riskPerTrade)));
+      const streak = streakRisk(1 - m.p, totalTrades, streakLength);
+      const dailyEv = m.ev * v.tradesPerDay;
+      const evDays = dailyEv > 0 ? Math.max(v.minDays, Math.ceil(v.profitTarget / dailyEv)) : Infinity;
+      const timeLabel = "Median time among hits";
+      const timeValue = selected.counts.pass > 0 ? `${Math.max(1, Math.round(selected.medianPassDays))} days` : "No hit";
+      const rangeValue = selected.counts.pass > 0
+        ? `${Math.max(1, Math.round(selected.p25PassDays))}-${Math.max(1, Math.round(selected.p75PassDays))} days`
+        : "No successful paths";
+
+      renderSensitivityHeatmap(v, rows);
+
+      ui.summaryBody.innerHTML = [
+        ["Target window", dayText(v.targetDays), "Deadline used for the simulation"],
+        [timeLabel, timeValue, "Middle successful path"],
+        ["Time range", rangeValue, "25th to 75th percentile"],
+        ["EV pace", Number.isFinite(evDays) ? `${evDays} days` : "Not viable", "Target divided by expected daily EV"],
+        ["Break-even win rate", pct(m.breakEven), "Before sequence constraints"],
+        [`${streakLength}-loss streak`, pct(streak), `Approx chance in ${totalTrades} trades`],
+        ["Best", money(selected.best), "Top simulated finish"],
+        ["90th percentile", money(selected.p90), "Strong path threshold"],
+        ["Median", money(selected.medianFinal), "Middle path"],
+        ["10th percentile", money(selected.p10), "Weak path threshold"],
+        ["Worst", money(selected.worst), "Lowest simulated finish"],
+        ["Average drawdown", money(selected.avgDrawdown), "Mean peak-to-trough loss"],
+        ["Median drawdown", money(selected.medianDrawdown), "Typical peak-to-trough loss"]
+      ].map((row) => `
+        <tr>
+          <td>${row[0]}</td>
+          <td>${row[1]}</td>
+          <td>${row[2]}</td>
+        </tr>
+      `).join("");
+    }
+
+    function chartText(type) {
+      const copy = {
+        probability: ["Target chance by win rate", "How win rate changes the odds of reaching the target before drawdown."],
+        equity: ["Equity paths", "Representative Monte Carlo paths with target and max-loss lines."],
+        outcomes: ["Trade outcomes", "Per-trade win, loss, and expected value."],
+        frontier: ["Sizing frontier", "Risk per trade compared by time-to-pass and ruin risk."]
+      };
+      ui.chartTitle.textContent = copy[type][0];
+      ui.chartSubtitle.textContent = copy[type][1];
+    }
+
+    function draw() {
+      if (!last) return;
+      chartText(activeChart);
+      const ctx = ui.chart.getContext("2d");
+      const rect = ui.chart.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      const pixelWidth = Math.round(width * ratio);
+      const pixelHeight = Math.round(height * ratio);
+      if (ui.chart.width !== pixelWidth || ui.chart.height !== pixelHeight) {
+        ui.chart.width = pixelWidth;
+        ui.chart.height = pixelHeight;
+      }
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      const colors = chartTheme();
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colors.canvas;
+      ctx.fillRect(0, 0, width, height);
+      hoverCandidates = [];
+      if (activeChart === "probability") drawProbability(ctx, width, height);
+      if (activeChart === "equity") drawEquity(ctx, width, height);
+      if (activeChart === "outcomes") drawOutcomes(ctx, width, height);
+      if (activeChart === "frontier") drawFrontier(ctx, width, height);
+      if (hoverPoint) drawChartTooltip(ctx, width, height, hoverPoint);
+    }
+
+    function plotArea(width, height) {
+      if (width < 520) {
+        return { left: 52, right: width - 14, top: 62, bottom: height - 54, compact: true };
+      }
+      return { left: 70, right: width - 28, top: 46, bottom: height - 58 };
+    }
+
+    function sx(value, min, max, left, right) {
+      if (min === max) return (left + right) / 2;
+      return left + ((value - min) / (max - min)) * (right - left);
+    }
+
+    function sy(value, min, max, bottom, top) {
+      if (min === max) return (top + bottom) / 2;
+      return bottom - ((value - min) / (max - min)) * (bottom - top);
+    }
+
+    function grid(ctx, area, yLabels) {
+      const colors = chartTheme();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = colors.grid;
+      ctx.fillStyle = colors.muted;
+      ctx.font = `${area.compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+      yLabels.forEach((label) => {
+        ctx.beginPath();
+        ctx.moveTo(area.left, label.y);
+        ctx.lineTo(area.right, label.y);
+        ctx.stroke();
+        ctx.textAlign = "right";
+        ctx.fillText(label.text, area.left - (area.compact ? 7 : 10), label.y + 5);
+      });
+    }
+
+    function line(ctx, points, color, width = 4, alpha = 1) {
+      if (!points.length) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      if (points.length === 2) {
+        ctx.lineTo(points[1].x, points[1].y);
+      } else {
+        for (let index = 1; index < points.length - 1; index += 1) {
+          const current = points[index];
+          const next = points[index + 1];
+          const midX = (current.x + next.x) / 2;
+          const midY = (current.y + next.y) / 2;
+          ctx.quadraticCurveTo(current.x, current.y, midX, midY);
+        }
+        const lastPoint = points[points.length - 1];
+        ctx.lineTo(lastPoint.x, lastPoint.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function registerHoverPoint(point) {
+      hoverCandidates.push(point);
+    }
+
+    function nearestHoverPoint(x, y) {
+      let closest = null;
+      let closestDistance = Infinity;
+      hoverCandidates.forEach((point) => {
+        if (point.area) {
+          const padding = point.snapX ? 0 : 12;
+          if (
+            x < point.area.left - padding ||
+            x > point.area.right + padding ||
+            y < point.area.top - padding ||
+            y > point.area.bottom + padding
+          ) return;
+        }
+        const distance = point.snapX ? Math.abs(point.x - x) : Math.hypot(point.x - x, point.y - y);
+        if (distance < closestDistance) {
+          closest = point;
+          closestDistance = distance;
+        }
+      });
+      return closest && (closest.snapX || closestDistance <= 22) ? closest : null;
+    }
+
+    function drawChartTooltip(ctx, width, height, point) {
+      const colors = chartTheme();
+      ctx.save();
+      ctx.strokeStyle = colors.axis;
+      ctx.fillStyle = colors.canvas;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.55;
+      ctx.beginPath();
+      const guideTop = point.area?.top ?? 46;
+      const guideBottom = point.area?.bottom ?? height - 58;
+      ctx.moveTo(point.x, guideTop);
+      ctx.lineTo(point.x, guideBottom);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      (point.markers || [{ x: point.x, y: point.y, color: point.color }]).forEach((marker) => {
+        ctx.fillStyle = marker.color || colors.ink;
+        ctx.beginPath();
+        ctx.arc(marker.x, marker.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = colors.canvas;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      ctx.font = "700 13px Plus Jakarta Sans, sans-serif";
+      const titleWidth = ctx.measureText(point.title).width;
+      ctx.font = "12px Plus Jakarta Sans, sans-serif";
+      const lineWidths = point.lines.map((line) => ctx.measureText(line).width);
+      const boxWidth = Math.max(142, titleWidth, ...lineWidths) + 24;
+      const boxHeight = 28 + point.lines.length * 18;
+      const boxX = Math.min(width - boxWidth - 14, Math.max(14, point.x + 14));
+      const boxY = Math.min(height - boxHeight - 14, Math.max(14, point.y - boxHeight - 14));
+
+      ctx.globalAlpha = 0.96;
+      ctx.fillStyle = colors.panel || colors.canvas;
+      roundedRect(ctx, boxX, boxY, boxWidth, boxHeight, 10);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = colors.line || colors.grid;
+      ctx.stroke();
+      ctx.fillStyle = colors.ink;
+      ctx.font = "700 13px Plus Jakarta Sans, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(point.title, boxX + 12, boxY + 18);
+      ctx.font = "12px Plus Jakarta Sans, sans-serif";
+      ctx.fillStyle = colors.muted;
+      point.lines.forEach((line, index) => {
+        ctx.fillText(line, boxX + 12, boxY + 38 + index * 18);
+      });
+      ctx.restore();
+    }
+
+    function drawProbability(ctx, width, height) {
+      const area = plotArea(width, height);
+      const rows = last.rows;
+      grid(ctx, area, [0, 0.25, 0.5, 0.75, 1].map((value) => ({
+        y: sy(value, 0, 1, area.bottom, area.top),
+        text: pct(value)
+      })));
+      const minRate = Math.min(...rows.map((row) => row.winRate));
+      const maxRate = Math.max(...rows.map((row) => row.winRate));
+      const passPoints = rows.map((row) => ({
+        x: sx(row.winRate, minRate, maxRate, area.left, area.right),
+        y: sy(row.passRate, 0, 1, area.bottom, area.top),
+        row
+      }));
+      const failPoints = rows.map((row) => ({
+        x: sx(row.winRate, minRate, maxRate, area.left, area.right),
+        y: sy(row.failRate, 0, 1, area.bottom, area.top),
+        row
+      }));
+      line(ctx, passPoints, chartTheme().green);
+      line(ctx, failPoints, chartTheme().red);
+      passPoints.forEach((point, index) => {
+        const failPoint = failPoints[index];
+        registerHoverPoint({
+          x: point.x,
+          y: point.y,
+          area,
+          snapX: true,
+          color: chartTheme().green,
+          title: `${point.row.winRate}% win rate`,
+          lines: [
+            `Target: ${pct(point.row.passRate)}`,
+            `Ruin: ${pct(point.row.failRate)}`,
+            `Expired: ${pct(point.row.expiredRate)}`,
+            `EV/trade: ${money(point.row.ev, true)}`
+          ],
+          markers: [
+            { x: point.x, y: point.y, color: chartTheme().green },
+            { x: failPoint.x, y: failPoint.y, color: chartTheme().red }
+          ]
+        });
+      });
+      legend(ctx, width, [["Target", chartTheme().green], ["Ruin", chartTheme().red]]);
+      xLabels(ctx, area, rows.map((row) => ({ value: row.winRate, text: `${row.winRate}%` })), minRate, maxRate);
+      axisLabels(ctx, area, "Win rate", "Probability");
+    }
+
+    function drawEv(ctx, width, height) {
+      const colors = chartTheme();
+      const area = plotArea(width, height);
+      const rows = last.rows;
+      const values = rows.map((row) => row.ev);
+      const minEv = Math.min(...values, 0);
+      const maxEv = Math.max(...values, 0);
+      grid(ctx, area, [minEv, 0, maxEv].map((value) => ({
+        y: sy(value, minEv, maxEv, area.bottom, area.top),
+        text: money(value)
+      })));
+      const minRate = Math.min(...rows.map((row) => row.winRate));
+      const maxRate = Math.max(...rows.map((row) => row.winRate));
+      line(ctx, rows.map((row) => ({
+        x: sx(row.winRate, minRate, maxRate, area.left, area.right),
+        y: sy(row.ev, minEv, maxEv, area.bottom, area.top)
+      })), colors.blue);
+      legend(ctx, width, [["EV/trade", colors.blue]]);
+      xLabels(ctx, area, rows.map((row) => ({ value: row.winRate, text: `${row.winRate}%` })), minRate, maxRate);
+      axisLabels(ctx, area, "Win rate", "EV per trade");
+    }
+
+    function drawFrontier(ctx, width, height) {
+      const colors = chartTheme();
+      const area = plotArea(width, height);
+      const multipliers = [0.5, 0.75, 1, 1.25, 1.5, 2];
+      const runs = Math.min(last.v.runs, 900);
+      const points = multipliers.map((multiple) => {
+        const risk = Math.max(1, Math.round(last.v.riskPerTrade * multiple));
+        const values = { ...last.v, riskPerTrade: risk };
+        const sim = run(values, values.winRate, runs, 0);
+        return {
+          risk,
+          isCurrent: multiple === 1,
+          passRate: sim.passRate,
+          failRate: sim.failRate,
+          days: sim.counts.pass > 0 ? Math.max(1, sim.medianPassDays) : last.v.targetDays + 5
+        };
+      });
+      const minDays = Math.max(1, Math.floor(Math.min(...points.map((point) => point.days))) - 1);
+      const maxDays = Math.ceil(Math.max(...points.map((point) => point.days))) + 1;
+      const maxFail = Math.max(0.05, Math.max(...points.map((point) => point.failRate)) * 1.15);
+
+      grid(ctx, area, [0, maxFail / 2, maxFail].map((value) => ({
+        y: sy(value, 0, maxFail, area.bottom, area.top),
+        text: pct(value)
+      })));
+
+      const frontierLine = [...points]
+        .sort((a, b) => a.days - b.days || b.failRate - a.failRate)
+        .map((point) => ({
+          x: sx(point.days, minDays, maxDays, area.left, area.right),
+          y: sy(point.failRate, 0, maxFail, area.bottom, area.top)
+        }));
+      line(ctx, frontierLine, colors.blue, 3, 0.34);
+
+      ctx.fillStyle = colors.muted;
+      points.forEach((point) => {
+        const x = sx(point.days, minDays, maxDays, area.left, area.right);
+        const y = sy(point.failRate, 0, maxFail, area.bottom, area.top);
+        const radius = 6 + point.passRate * 8;
+        ctx.fillStyle = point.isCurrent ? colors.ink : colors.blue;
+        ctx.globalAlpha = point.isCurrent ? 0.95 : 0.72;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = colors.ink;
+        ctx.font = point.isCurrent ? "800 15px Plus Jakarta Sans, sans-serif" : "700 14px Plus Jakarta Sans, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(money(point.risk), x, y - radius - 8);
+      });
+
+      xLabels(ctx, area, [
+        { value: minDays, text: `${minDays}d` },
+        { value: Math.round((minDays + maxDays) / 2), text: `${Math.round((minDays + maxDays) / 2)}d` },
+        { value: maxDays, text: `${maxDays}d` }
+      ], minDays, maxDays);
+      legend(ctx, width, [
+        { text: "Risk sizes", color: colors.blue, marker: "dot" },
+        { text: "Frontier", color: colors.blue, marker: "line", alpha: 0.48 },
+        { text: "Current", color: colors.ink, marker: "dot" }
+      ]);
+      axisLabels(ctx, area, "Median days to target", "Ruin risk");
+    }
+
+    function drawOutcomes(ctx, width, height) {
+      const colors = chartTheme();
+      const area = plotArea(width, height);
+      const m = last.m;
+      const outcomes = [
+        { label: `Win (${last.v.winRate}%)`, value: m.win, color: colors.green },
+        { label: `Loss (${100 - last.v.winRate}%)`, value: m.loss, color: colors.red },
+        { label: "EV / trade", value: m.ev, color: colors.blue }
+      ];
+      const min = Math.min(...outcomes.map((item) => item.value), 0);
+      const max = Math.max(...outcomes.map((item) => item.value), 0);
+      grid(ctx, area, [min, 0, max].map((value) => ({
+        y: sy(value, min, max, area.bottom, area.top),
+        text: money(value)
+      })));
+      const zeroY = sy(0, min, max, area.bottom, area.top);
+      ctx.strokeStyle = colors.grid;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(area.left, zeroY);
+      ctx.lineTo(area.right, zeroY);
+      ctx.stroke();
+
+      const slot = (area.right - area.left) / outcomes.length;
+      const barWidth = Math.min(120, slot * 0.52);
+      outcomes.forEach((item, index) => {
+        const center = area.left + slot * index + slot / 2;
+        const y = sy(item.value, min, max, area.bottom, area.top);
+        const top = Math.min(y, zeroY);
+        const height = Math.max(4, Math.abs(zeroY - y));
+        ctx.fillStyle = item.color;
+        roundedBar(ctx, center - barWidth / 2, top, barWidth, height, 10, item.value >= 0 ? "top" : "bottom");
+        ctx.fill();
+        ctx.fillStyle = colors.ink;
+        ctx.font = "700 15px Plus Jakarta Sans, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(money(item.value, true), center, top - 9);
+        ctx.fillStyle = colors.muted;
+        ctx.font = "14px Plus Jakarta Sans, sans-serif";
+        ctx.fillText(item.label, center, area.bottom + 28);
+      });
+      axisLabels(ctx, area, "Trade outcome", "Dollars per trade");
+    }
+
+    function drawEquity(ctx, width, height) {
+      const colors = chartTheme();
+      const area = plotArea(width, height);
+      const paths = last.selected.paths;
+      const all = paths.flatMap((path) => path.map((point) => point.pnl));
+      const yMin = Math.min(...all, -last.v.maxLoss * 1.1);
+      const yMax = Math.max(...all, last.v.profitTarget * 1.08);
+      const maxTrade = Math.max(...paths.flatMap((path) => path.map((point) => point.trade)), last.v.targetDays * last.v.tradesPerDay);
+      const maxX = maxTrade;
+      const zeroY = sy(0, yMin, yMax, area.bottom, area.top);
+      ctx.strokeStyle = colors.grid;
+      ctx.globalAlpha = 0.75;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(area.left, zeroY);
+      ctx.lineTo(area.right, zeroY);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = colors.muted;
+      ctx.font = `${area.compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+      ctx.textAlign = "right";
+      ctx.fillText(money(0), area.left - (area.compact ? 7 : 10), zeroY + 5);
+      dashed(ctx, area.left, sy(last.v.profitTarget, yMin, yMax, area.bottom, area.top), area.right, colors.green, money(last.v.profitTarget), area);
+      dashed(ctx, area.left, sy(-last.v.maxLoss, yMin, yMax, area.bottom, area.top), area.right, colors.red, money(-last.v.maxLoss), area);
+      paths.forEach((path) => {
+        line(ctx, path.map((point) => ({
+          x: sx(point.trade, 0, maxX, area.left, area.right),
+          y: sy(point.pnl, yMin, yMax, area.bottom, area.top)
+        })), colors.blue, 2, 0.2);
+      });
+      const slices = new Map();
+      paths.forEach((path) => {
+        path.forEach((point) => {
+          const value = point.trade;
+          if (!slices.has(value)) slices.set(value, []);
+          slices.get(value).push(point.pnl);
+        });
+      });
+      [...slices.entries()].forEach(([value, pnls]) => {
+        const median = percentile(pnls, 0.5);
+        const p10 = percentile(pnls, 0.1);
+        const p90 = percentile(pnls, 0.9);
+        const targetHits = pnls.filter((pnl) => pnl >= last.v.profitTarget).length;
+        const lossHits = pnls.filter((pnl) => pnl <= -last.v.maxLoss).length;
+        registerHoverPoint({
+          x: sx(value, 0, maxX, area.left, area.right),
+          y: sy(median, yMin, yMax, area.bottom, area.top),
+          area,
+          snapX: true,
+          color: colors.blue,
+          title: `Trade ${value}`,
+          lines: [
+            `Median P&L: ${money(median)}`,
+            `10-90% range: ${money(p10)} to ${money(p90)}`,
+            `At target: ${targetHits}/${pnls.length}`,
+            `At max loss: ${lossHits}/${pnls.length}`
+          ]
+        });
+      });
+      legend(ctx, width, [["Paths", colors.blue], ["Target", colors.green], ["Max loss", colors.red]]);
+      xLabels(ctx, area, [
+        { value: 0, text: "0" },
+        { value: Math.round(maxX / 2), text: `${Math.round(maxX / 2)}` },
+        { value: maxX, text: `${maxX}` }
+      ], 0, maxX);
+      axisLabels(ctx, area, "Trades", "P&L");
+    }
+
+    function dashed(ctx, x1, y, x2, color, label = "", area = null) {
+      ctx.save();
+      ctx.setLineDash([12, 12]);
+      ctx.strokeStyle = color;
+      ctx.globalAlpha = 0.5;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x1, y);
+      ctx.lineTo(x2, y);
+      ctx.stroke();
+      if (label && area) {
+        ctx.setLineDash([]);
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = color;
+        ctx.font = `${area.compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+        ctx.textAlign = "right";
+        ctx.fillText(label, area.left - (area.compact ? 7 : 10), y + 5);
+      }
+      ctx.restore();
+    }
+
+    function legend(ctx, width, items) {
+      const colors = chartTheme();
+      const compact = width < 520;
+      ctx.font = `${compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+      ctx.textAlign = "right";
+      let x = width - (compact ? 16 : 34);
+      let y = compact ? 24 : 30;
+      items.slice().reverse().forEach((item) => {
+        const entry = Array.isArray(item) ? { text: item[0], color: item[1], marker: "dot" } : item;
+        const { text, color, marker = "dot", alpha = 1 } = entry;
+        const textWidth = ctx.measureText(text).width;
+        if (compact && x - textWidth - 34 < 10) {
+          x = width - 16;
+          y += 20;
+        }
+        ctx.fillStyle = colors.muted;
+        ctx.fillText(text, x, y);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        const markerX = x - textWidth - (compact ? 14 : 18);
+        const markerY = y - 9;
+        if (marker === "line" || marker === "dash") {
+          if (marker === "dash") ctx.setLineDash([5, 5]);
+          ctx.beginPath();
+          ctx.moveTo(markerX - 7, markerY);
+          ctx.lineTo(markerX + 7, markerY);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(markerX, markerY, compact ? 4 : 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+        x -= textWidth + (compact ? 34 : 42);
+      });
+    }
+
+    function xLabels(ctx, area, labels, min, max) {
+      ctx.fillStyle = chartTheme().muted;
+      ctx.font = `${area.compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+      ctx.textAlign = "center";
+      labels.forEach((label) => {
+        ctx.fillText(label.text, sx(label.value, min, max, area.left, area.right), area.bottom + (area.compact ? 23 : 28));
+      });
+    }
+
+    function axisLabels(ctx, area, xLabel, yLabel) {
+      ctx.save();
+      ctx.fillStyle = chartTheme().axis;
+      ctx.font = `700 ${area.compact ? 13 : 15}px Plus Jakarta Sans, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText(xLabel, (area.left + area.right) / 2, area.bottom + (area.compact ? 42 : 50));
+      ctx.translate(area.compact ? 17 : 24, (area.top + area.bottom) / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(yLabel, 0, 0);
+      ctx.restore();
+    }
+
+    function roundedRect(ctx, x, y, width, height, radius) {
+      const r = Math.min(radius, width / 2, Math.abs(height) / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + width - r, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+      ctx.lineTo(x + width, y + height);
+      ctx.lineTo(x, y + height);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function roundedBar(ctx, x, y, width, height, radius, roundedEnd) {
+      const r = Math.min(radius, width / 2, Math.abs(height) / 2);
+      ctx.beginPath();
+      if (roundedEnd === "top") {
+        ctx.moveTo(x, y + height);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.lineTo(x + width - r, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+        ctx.lineTo(x + width, y + height);
+      } else {
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + width, y);
+        ctx.lineTo(x + width, y + height - r);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+        ctx.lineTo(x + r, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+      }
+      ctx.closePath();
+    }
+
+    function allPresets() {
+      return [...BUILT_INS, ...savedPresets];
+    }
+
+    function renderPresets() {
+      const selected = ui.presetSelect.value;
+      ui.presetSelect.innerHTML = allPresets().map((preset) => (
+        `<option value="${preset.id}">${preset.builtIn ? "Template" : "Saved"}: ${escapeHtml(preset.name)}</option>`
+      )).join("");
+      if (allPresets().some((preset) => preset.id === selected)) ui.presetSelect.value = selected;
+      ui.savedCount.textContent = `${savedPresets.length} saved`;
+    }
+
+    function selectedPreset() {
+      return allPresets().find((preset) => preset.id === ui.presetSelect.value);
+    }
+
+    function savedIndex() {
+      return savedPresets.findIndex((preset) => preset.id === ui.presetSelect.value);
+    }
+
+    function saveCurrent(name) {
+      const clean = name.trim();
+      if (!clean) return toast("Name it first.");
+      const preset = {
+        id: `saved-${Date.now()}`,
+        name: clean,
+        builtIn: false,
+        values: values()
+      };
+      savedPresets.push(preset);
+      writeSaved();
+      renderPresets();
+      ui.presetSelect.value = preset.id;
+      toast("Saved.");
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function toast(message) {
+      ui.toast.textContent = message;
+      ui.toast.classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => ui.toast.classList.remove("show"), 1600);
+    }
+
+    function schedule() {
+      clearTimeout(timer);
+      timer = setTimeout(render, 140);
+    }
+
+    fields.forEach((id) => {
+      input[id].addEventListener("input", () => {
+        if (id === "winRate") {
+          ui.winRateText.textContent = `${input.winRate.value}%`;
+          updateWinRateSlider(input.winRate.value);
+        }
+        schedule();
+      });
+      input[id].addEventListener("change", schedule);
+    });
+
+    document.querySelector(".tabs").addEventListener("click", (event) => {
+      const button = event.target.closest(".tab");
+      if (!button) return;
+      document.querySelectorAll(".tab").forEach((tab) => tab.classList.remove("active"));
+      button.classList.add("active");
+      activeChart = button.dataset.chart;
+      hoverPoint = null;
+      draw();
+    });
+
+    ui.chart.addEventListener("mousemove", (event) => {
+      const rect = ui.chart.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const nextHover = nearestHoverPoint(x, y);
+      ui.chart.style.cursor = nextHover ? "crosshair" : "default";
+      if (nextHover !== hoverPoint) {
+        hoverPoint = nextHover;
+        draw();
+      }
+    });
+
+    ui.chart.addEventListener("mouseleave", () => {
+      hoverPoint = null;
+      ui.chart.style.cursor = "default";
+      draw();
+    });
+
+    ui.presetSelect.addEventListener("change", () => {
+      const preset = selectedPreset();
+      if (!preset) return;
+      setValues(preset.values);
+      ui.presetName.value = preset.builtIn ? "" : preset.name;
+      render();
+    });
+
+    ui.savePreset.addEventListener("click", () => saveCurrent(ui.presetName.value));
+
+    ui.overwritePreset.addEventListener("click", () => {
+      const index = savedIndex();
+      if (index < 0) return toast("Select a saved preset.");
+      savedPresets[index].values = values();
+      savedPresets[index].name = ui.presetName.value.trim() || savedPresets[index].name;
+      writeSaved();
+      render();
+      toast("Overwritten.");
+    });
+
+    ui.renamePreset.addEventListener("click", () => {
+      const index = savedIndex();
+      const clean = ui.presetName.value.trim();
+      if (index < 0 || !clean) return toast("Select saved preset and name.");
+      savedPresets[index].name = clean;
+      writeSaved();
+      render();
+      toast("Renamed.");
+    });
+
+    ui.duplicatePreset.addEventListener("click", () => {
+      const preset = selectedPreset();
+      if (!preset) return;
+      const copy = {
+        id: `saved-${Date.now()}`,
+        name: `${preset.name} copy`,
+        builtIn: false,
+        values: { ...preset.values }
+      };
+      savedPresets.push(copy);
+      writeSaved();
+      renderPresets();
+      ui.presetSelect.value = copy.id;
+      ui.presetName.value = copy.name;
+      toast("Duplicated.");
+    });
+
+    ui.deletePreset.addEventListener("click", () => {
+      const index = savedIndex();
+      if (index < 0) return toast("Templates stay available.");
+      const preset = savedPresets[index];
+      if (pendingDeleteId !== preset.id) {
+        pendingDeleteId = preset.id;
+        ui.deletePreset.textContent = "Confirm";
+        clearTimeout(pendingDeleteTimer);
+        pendingDeleteTimer = setTimeout(() => {
+          pendingDeleteId = null;
+          ui.deletePreset.textContent = "Delete";
+        }, 3000);
+        return toast("Click Confirm to delete.");
+      }
+      savedPresets.splice(index, 1);
+      pendingDeleteId = null;
+      ui.deletePreset.textContent = "Delete";
+      clearTimeout(pendingDeleteTimer);
+      writeSaved();
+      render();
+      toast("Deleted.");
+    });
+
+    window.addEventListener("resize", draw);
+
+    applyTheme(theme);
+    setValues(defaults());
+    renderPresets();
+    render();
+  </script>
+</body>
+</html>

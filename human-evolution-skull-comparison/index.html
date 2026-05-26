@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Interactive hominin skull models, fossil specimens, and chronology.">
+    <meta name="theme-color" content="#111318">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hominin Skulls">
+    <meta property="og:description" content="Compare interactive hominin skull models, fossil specimens, and chronology.">
+    <meta property="og:image" content="images/hero-skull.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Hominin Skulls</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <script>
+        (() => {
+            try {
+                const savedTheme = localStorage.getItem("skullTheme");
+                const systemTheme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+                document.documentElement.dataset.theme = savedTheme || systemTheme;
+            } catch {
+                document.documentElement.dataset.theme = "light";
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        self.ModelViewerElement = self.ModelViewerElement || {};
+        self.ModelViewerElement.dracoDecoderLocation = "vendor/draco/";
+    </script>
+    <script type="module" src="vendor/model-viewer/model-viewer.min.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#models">Skip to content</a>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+        <symbol id="icon-origin" viewBox="0 0 24 24">
+            <path d="M12 3c3.2 0 6 2.2 6 5.4 0 2.3-1.4 4.2-3.4 5.1l-.6 3.8h-4l-.6-3.8C7.4 12.6 6 10.7 6 8.4 6 5.2 8.8 3 12 3Z"/>
+            <path d="M9 20h6"/>
+            <path d="M9.5 8.3h.01M14.5 8.3h.01"/>
+            <path d="M10.5 12.2c.9.5 2.1.5 3 0"/>
+        </symbol>
+        <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+        <symbol id="icon-model" viewBox="0 0 24 24"><path d="M12 3 4.5 7.2v9.6L12 21l7.5-4.2V7.2L12 3Z"/><path d="M12 12 4.5 7.2M12 12l7.5-4.8M12 12v9"/></symbol>
+        <symbol id="icon-compare" viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 5h5v14h-5M12 7v10"/></symbol>
+        <symbol id="icon-time" viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></symbol>
+        <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></symbol>
+        <symbol id="icon-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
+        <symbol id="icon-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+        <symbol id="icon-rotate" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.4 6.4"/><path d="M3 12A9 9 0 0 1 18.4 5.6"/><path d="M18 2v4h-4M6 22v-4h4"/></symbol>
+        <symbol id="icon-reset" viewBox="0 0 24 24"><path d="M4 4v6h6"/><path d="M20 20v-6h-6"/><path d="M20 10a8 8 0 0 0-14.9-4M4 14a8 8 0 0 0 14.9 4"/></symbol>
+        <symbol id="icon-ruler" viewBox="0 0 24 24"><path d="m3 17 14-14 4 4L7 21l-4-4Z"/><path d="m14 6 2 2M11 9l2 2M8 12l2 2M5 15l2 2"/></symbol>
+        <symbol id="icon-share" viewBox="0 0 24 24"><path d="M4 12v7h16v-7"/><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/></symbol>
+        <symbol id="icon-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+        <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="icon-panel-right" viewBox="0 0 24 24"><path d="M4 5h16v14H4Z"/><path d="M15 5v14"/><path d="m8 9 3 3-3 3"/></symbol>
+        <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
+        <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a7 7 0 1 0 11 11Z"/></symbol>
+    </svg>
+
+    <header class="app-header">
+        <a class="brand" href="#models" aria-label="Hominin skull models">
+            <span class="brand-mark" aria-hidden="true"><svg><use href="#icon-origin"></use></svg></span>
+            <span class="brand-copy">
+                <span class="brand-name">Hominin Skulls</span>
+                <span class="brand-line">Models and specimens</span>
+            </span>
+        </a>
+        <nav class="top-nav" aria-label="Primary">
+            <a href="#models" data-nav="models"><svg><use href="#icon-model"></use></svg><span>Models</span></a>
+            <a href="#timeline" data-nav="timeline"><svg><use href="#icon-time"></use></svg><span>Time</span></a>
+            <a href="#catalog" data-nav="catalog"><svg><use href="#icon-grid"></use></svg><span>Catalog</span></a>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span class="material-symbols-rounded theme-icon theme-icon-moon" aria-hidden="true">dark_mode</span>
+                <span class="material-symbols-rounded theme-icon theme-icon-sun" aria-hidden="true">light_mode</span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="workbench" id="models" aria-labelledby="speciesPanelTitle">
+            <aside class="species-panel" id="speciesPanel" aria-label="Skull browser">
+                <div class="panel-head">
+                    <div>
+                        <h1 id="speciesPanelTitle">Skulls</h1>
+                    </div>
+                    <button class="icon-button panel-close" id="closeSpeciesPanel" type="button" aria-label="Close skull browser">
+                        <svg><use href="#icon-x"></use></svg>
+                    </button>
+                </div>
+                <label class="search-field">
+                    <svg aria-hidden="true"><use href="#icon-search"></use></svg>
+                    <input id="speciesSearch" type="search" placeholder="Search skulls" autocomplete="off">
+                </label>
+                <div class="species-list" id="speciesList"></div>
+                <p class="asset-credit">
+                    3D skull models by <a href="https://skfb.ly/puMzq" target="_blank" rel="noopener">Adam Worthington</a>
+                    <span>CC BY 4.0.</span>
+                </p>
+            </aside>
+
+            <div class="model-space">
+                <div class="mobile-toolbar">
+                    <button class="text-button" id="openSpeciesPanel" type="button">
+                        <svg><use href="#icon-menu"></use></svg>
+                        <span id="openSpeciesPanelLabel">Skulls</span>
+                    </button>
+                    <div class="mode-tabs" role="group" aria-label="Viewer mode">
+                        <button class="mode-tab is-active" id="singleMode" type="button" aria-pressed="true">Single</button>
+                        <button class="mode-tab" id="compareMode" type="button" aria-pressed="false">Compare</button>
+                    </div>
+                </div>
+
+                <section class="viewer-area" aria-label="3D model viewer">
+                    <div class="viewer-stage" id="viewerStage">
+                        <div class="viewer-topbar">
+                            <div>
+                                <p class="eyebrow" id="currentEra">Homo sapiens</p>
+                                <h2 id="currentName">Homo sapiens</h2>
+                                <p id="currentMeta">Present · 1400 cc</p>
+                            </div>
+                            <div class="viewer-actions" role="group" aria-label="Model controls">
+                                <button class="icon-button" id="toggleSpin" type="button" aria-label="Start rotation" aria-pressed="false" title="Start rotation">
+                                    <svg><use href="#icon-rotate"></use></svg>
+                                </button>
+                                <button class="icon-button" id="toggleDetailPanel" type="button" aria-label="Hide details" aria-controls="detailPanelContent" aria-expanded="true" title="Hide details">
+                                    <svg><use href="#icon-panel-right"></use></svg>
+                                </button>
+                                <button class="icon-button compare-tool" id="scaleToggle" type="button" aria-label="Toggle scale" aria-pressed="true" title="Scale">
+                                    <svg><use href="#icon-ruler"></use></svg>
+                                </button>
+                                <button class="icon-button compare-tool" id="shareCompare" type="button" aria-label="Copy comparison link" title="Copy link">
+                                    <svg><use href="#icon-share"></use></svg>
+                                </button>
+                                <button class="text-button compare-tool clear-compare-button" id="clearCompare" type="button" aria-label="Clear comparison" title="Clear comparison" hidden>Clear</button>
+                            </div>
+                        </div>
+                        <span class="viewer-reset-hint" id="viewerResetHint">
+                            <span class="reset-copy-desktop">Double-click</span>
+                            <span class="reset-copy-mobile">Double-tap</span>
+                            to reset camera
+                        </span>
+
+                        <div class="single-view" id="singleView">
+                            <model-viewer
+                                id="singleViewer"
+                                camera-controls
+                                interaction-prompt="none"
+                                disable-tap
+                                shadow-intensity="0.9"
+                                shadow-softness="0.72"
+                                exposure="0.95"
+                                environment-image="neutral"
+                                loading="eager"
+                                reveal="auto"
+                                alt="Selected hominin skull model">
+                            </model-viewer>
+                        </div>
+
+                        <div class="compare-view" id="compareView" hidden></div>
+                    </div>
+
+                    <aside class="detail-panel" id="detailPanel" aria-label="Selected model details">
+                        <div class="detail-panel-content" id="detailPanelContent"></div>
+                    </aside>
+                </section>
+            </div>
+        </section>
+
+        <section class="timeline-section" id="timeline" aria-labelledby="timelineTitle">
+            <div class="section-header">
+                <div>
+                    <h2 id="timelineTitle">Timeline</h2>
+                </div>
+                <p>Specimens placed on a logarithmic time scale.</p>
+            </div>
+            <div class="era-filters" id="eraFilters"></div>
+            <div class="timeline-track" id="timelineTrack">
+                <div class="timeline-scale" id="timelineScale"></div>
+                <div class="timeline-points" id="timelinePoints"></div>
+            </div>
+        </section>
+
+        <section class="catalog-section" id="catalog" aria-labelledby="catalogTitle">
+            <div class="section-header">
+                <div>
+                    <h2 id="catalogTitle">Catalog</h2>
+                </div>
+                <p>Filter specimens by species, site, date, and source.</p>
+            </div>
+            <div class="catalog-tools">
+                <label class="search-field">
+                    <svg aria-hidden="true"><use href="#icon-search"></use></svg>
+                    <input id="catalogSearch" type="search" placeholder="Search specimens, species, sites" autocomplete="off">
+                </label>
+                <select id="speciesFilter" aria-label="Filter by species"></select>
+                <select id="locationFilter" aria-label="Filter by location"></select>
+                <select id="sortFilter" aria-label="Sort catalog">
+                    <option value="age-desc">Oldest first</option>
+                    <option value="age-asc">Youngest first</option>
+                    <option value="name-asc">Species A-Z</option>
+                    <option value="year-desc">Newest discovery</option>
+                </select>
+            </div>
+            <div class="catalog-summary">
+                <span id="resultCount"></span>
+                <div class="view-switch" role="group" aria-label="Catalog view">
+                    <button class="icon-button is-active" id="gridView" type="button" aria-label="Grid view"><svg><use href="#icon-grid"></use></svg></button>
+                    <button class="icon-button" id="listView" type="button" aria-label="List view"><svg><use href="#icon-list"></use></svg></button>
+                </div>
+            </div>
+            <div class="catalog-grid" id="catalogGrid"></div>
+            <button class="load-more" id="loadMore" type="button">Show more</button>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Hominin Skulls</p>
+        <p>Fossil and model references</p>
+        <p>Updated <span id="footerYear"></span></p>
+    </footer>
+
+    <div class="modal" id="fossilModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+        <button class="modal-backdrop" id="modalBackdrop" type="button" aria-label="Close"></button>
+        <article class="modal-panel">
+            <button class="icon-button modal-close" id="modalClose" type="button" aria-label="Close details">
+                <svg><use href="#icon-x"></use></svg>
+            </button>
+            <div id="modalContent"></div>
+        </article>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="scrim" id="scrim"></div>
+
+    <script src="data/viewer-species.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
