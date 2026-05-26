@@ -2589,6 +2589,8 @@
       const colors = chartTheme();
       const compact = width < 520;
       ctx.font = `${compact ? 12 : 14}px Plus Jakarta Sans, sans-serif`;
+      const previousTextBaseline = ctx.textBaseline;
+      ctx.textBaseline = "middle";
       if (compact) {
         const entries = items.map((item) => (
           Array.isArray(item) ? { text: item[0], color: item[1], marker: "dot" } : item
@@ -2611,7 +2613,7 @@
         rows.slice(0, 2).forEach((row, rowIndex) => {
           const totalWidth = row.reduce((sum, entry) => sum + entry.width, 0);
           let x = Math.max(10, (width - totalWidth) / 2);
-          const y = 24 + rowIndex * 19;
+          const y = 20 + rowIndex * 19;
           row.forEach((entry) => {
             const { text, color, marker = "dot", alpha = 1, width: entryWidth } = entry;
             ctx.save();
@@ -2622,12 +2624,12 @@
             if (marker === "line" || marker === "dash") {
               if (marker === "dash") ctx.setLineDash([5, 5]);
               ctx.beginPath();
-              ctx.moveTo(x, y - 9);
-              ctx.lineTo(x + 14, y - 9);
+              ctx.moveTo(x, y);
+              ctx.lineTo(x + 14, y);
               ctx.stroke();
             } else {
               ctx.beginPath();
-              ctx.arc(x + 7, y - 9, 4, 0, Math.PI * 2);
+              ctx.arc(x + 7, y, 4, 0, Math.PI * 2);
               ctx.fill();
             }
             ctx.restore();
@@ -2637,12 +2639,13 @@
             x += entryWidth;
           });
         });
+        ctx.textBaseline = previousTextBaseline;
         return;
       }
 
       ctx.textAlign = "right";
       let x = width - (compact ? 16 : 34);
-      let y = compact ? 24 : 30;
+      let y = compact ? 20 : 26;
       items.slice().reverse().forEach((item) => {
         const entry = Array.isArray(item) ? { text: item[0], color: item[1], marker: "dot" } : item;
         const { text, color, marker = "dot", alpha = 1 } = entry;
@@ -2659,7 +2662,7 @@
         ctx.strokeStyle = color;
         ctx.lineWidth = 3;
         const markerX = x - textWidth - (compact ? 14 : 18);
-        const markerY = y - 9;
+        const markerY = y;
         if (marker === "line" || marker === "dash") {
           if (marker === "dash") ctx.setLineDash([5, 5]);
           ctx.beginPath();
@@ -2674,6 +2677,7 @@
         ctx.restore();
         x -= textWidth + (compact ? 34 : 42);
       });
+      ctx.textBaseline = previousTextBaseline;
     }
 
     function xLabels(ctx, area, labels, min, max) {
