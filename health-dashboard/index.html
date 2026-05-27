@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Health Dashboard</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      name="description"
+      content="A private encrypted health dashboard for @theunseenspirit."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#dashboard">Skip to dashboard</a>
+
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-lock" viewBox="0 0 24 24">
+        <path d="M7 11V8a5 5 0 0 1 10 0v3" />
+        <path d="M5 11h14v10H5z" />
+        <path d="M12 15v2" />
+      </symbol>
+      <symbol id="icon-unlock" viewBox="0 0 24 24">
+        <path d="M8 11V8a5 5 0 0 1 9.4-2.4" />
+        <path d="M5 11h14v10H5z" />
+        <path d="M12 15v2" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="m5 12 4.2 4.2L19 6.8" />
+      </symbol>
+      <symbol id="icon-pulse" viewBox="0 0 24 24">
+        <path d="M3 12h4l2-6 4 12 2-6h6" />
+      </symbol>
+      <symbol id="icon-chart" viewBox="0 0 24 24">
+        <path d="M4 19V5" />
+        <path d="M4 19h16" />
+        <path d="m7 15 3-4 3 2 5-7" />
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 10v6" />
+        <path d="M12 7h.01" />
+      </symbol>
+      <symbol id="icon-log-out" viewBox="0 0 24 24">
+        <path d="M10 5H5v14h5" />
+        <path d="M14 8l4 4-4 4" />
+        <path d="M18 12H9" />
+      </symbol>
+    </svg>
+
+    <main class="health-shell">
+      <section class="gate" id="gate" aria-labelledby="gateTitle">
+        <div class="gate-copy">
+          <p class="eyebrow">@theunseenspirit</p>
+          <h1 id="gateTitle">Health Dashboard</h1>
+          <p class="gate-note">
+            Enter the password to decrypt the health data in this browser.
+          </p>
+        </div>
+
+        <form class="unlock-panel" id="unlockForm">
+          <label class="password-field">
+            <span>Password</span>
+            <input
+              id="passwordInput"
+              type="password"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              required
+            />
+          </label>
+          <button class="primary-button" id="unlockButton" type="submit">
+            <svg aria-hidden="true"><use href="#icon-unlock"></use></svg>
+            <span>Unlock</span>
+          </button>
+          <div class="unlock-loader" aria-hidden="true">
+            <span></span>
+          </div>
+          <p class="status-line" id="payloadStatus" role="status">
+            Loading encrypted data.
+          </p>
+        </form>
+
+        <div class="unlock-approval" aria-hidden="true">
+          <div class="approval-mark">
+            <svg aria-hidden="true"><use href="#icon-check"></use></svg>
+          </div>
+          <p>Access approved</p>
+        </div>
+      </section>
+
+      <section class="dashboard" id="dashboard" aria-labelledby="dashboardTitle" hidden>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">@theunseenspirit</p>
+            <h1 id="dashboardTitle">Health Dashboard</h1>
+            <p class="meta-line" id="dataMeta"></p>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" id="lockButton" type="button" title="Lock dashboard" aria-label="Lock dashboard">
+              <svg aria-hidden="true"><use href="#icon-log-out"></use></svg>
+            </button>
+          </div>
+        </header>
+
+        <nav class="range-dock" aria-label="Timeframe">
+          <div class="segmented range-toggle" id="rangeControls" aria-label="Dashboard range">
+            <button type="button" data-range="30">1M</button>
+            <button type="button" data-range="90">3M</button>
+            <button type="button" data-range="180">6M</button>
+            <button type="button" data-range="270">9M</button>
+            <button type="button" data-range="365" class="is-active">1Y</button>
+            <button type="button" data-range="730">2Y</button>
+            <button type="button" data-range="1095">3Y</button>
+            <button type="button" data-range="all">All</button>
+          </div>
+        </nav>
+
+        <section class="metric-strip" id="metricStrip" aria-label="Health summary"></section>
+
+        <section class="visual-grid" aria-label="Metric views">
+          <article class="panel trend-panel">
+            <div class="panel-head panel-head-wide">
+              <div>
+                <h2 id="trendTitle">Steps</h2>
+              </div>
+              <p class="panel-date" id="trendDate"></p>
+            </div>
+            <div class="metric-tabs" id="metricTabs" aria-label="Trend metric"></div>
+            <div class="chart-wrap" id="trendChart"></div>
+          </article>
+
+          <article class="panel heat-panel" aria-labelledby="heatmapTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Daily intensity</p>
+                <h2 id="heatmapTitle">Heatmap</h2>
+              </div>
+              <p class="panel-date" id="heatmapDate"></p>
+            </div>
+            <div class="heatmap-wrap" id="heatmap"></div>
+          </article>
+
+          <article class="panel distribution-panel" aria-labelledby="distributionTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Distribution</p>
+                <h2 id="distributionTitle">Value Mix</h2>
+              </div>
+              <p class="panel-date" id="distributionDate"></p>
+            </div>
+            <div class="metric-pie" id="metricPie"></div>
+          </article>
+
+          <article class="panel bars-panel" aria-labelledby="barsTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Period averages</p>
+                <h2 id="barsTitle">Bars</h2>
+              </div>
+              <p class="panel-date" id="periodBarsDate"></p>
+            </div>
+            <div class="period-bars" id="periodBars"></div>
+          </article>
+        </section>
+
+        <section class="panel metric-table-panel" aria-labelledby="metricTableTitle">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Unified metrics</p>
+              <h2 id="metricTableTitle">Metric List</h2>
+            </div>
+            <p class="panel-date" id="metricDetailsDate"></p>
+          </div>
+          <div class="metric-table" id="metricDetails"></div>
+        </section>
+
+        <section class="import-help" aria-labelledby="importHelpTitle">
+          <h2 id="importHelpTitle">How to import data</h2>
+          <ol>
+            <li>Open the Health app on iPhone.</li>
+            <li>Tap your profile picture.</li>
+            <li>Tap Export All Health Data.</li>
+            <li>Confirm Export.</li>
+            <li>Send the exported ZIP to this project and rebuild the dashboard data.</li>
+          </ol>
+        </section>
+      </section>
+    </main>
+    <div class="chart-tooltip" id="chartTooltip" role="status" hidden></div>
+  </body>
+</html>
